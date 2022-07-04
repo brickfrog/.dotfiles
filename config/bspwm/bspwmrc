@@ -1,0 +1,99 @@
+#!/bin/bash
+
+#    _)               |   _)                      
+#     |  |   |   __|  __|  |   __ \  \ \   /  __| 
+#     |  |   | \__ \  |    |  |   |   \ \ /  (    
+#     |  \_,_| ____/ \__| _| _|  _| _) \_/  \___| 
+# ___/                                            
+# A customized bspwmrc for the bspwm window manager.
+# https://github.com/baskerville/sxhkd
+# https://github.com/baskerville/bspwm
+
+pgrep -x sxhkd > /dev/null || sxhkd &
+
+#### MONITORS ####
+
+# This uses output from ARandR
+~/.screenlayout/monitor.sh
+
+# Script is nice, but manual is less of a headache
+#~/.config/bspwm/scripts/workspaces_multimonitor
+bspc monitor DP-4   -d I II III IV V &&
+bspc monitor DP-3   -d VI VII VIII &&
+bspc monitor HDMI-0 -d IX X &&
+
+source ~/.zshrc
+
+#### CONFIG ####
+
+bspc config border_width         2
+bspc config -m DP-4 top_padding 25
+bspc config window_gap          12
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+bspc config pointer_follows_focus true
+bspc config focus_follows_pointer true
+bspc config remove_unplugged_monitors true
+bspc config remove_disabled_monitors true
+
+#### RULES ####
+
+bspc rule -a Gimp desktop='^4' state=floating follow=on
+bspc rule -a spotify desktop='^5'
+bspc rule -a thunderbird desktop='^9'
+bspc rule -a vivaldi desktop='^1'
+bspc rule -a mplayer2 state=floating
+bspc rule -a vlc state=floating
+bspc rule -a Steam state=floating manage=on layer=normal desktop='6^' follow=on
+bspc rule -a Emacs state=tiled
+bspc rule -a telegram-desktop desktop='^7'
+
+#### AUTOSTART & SCRIPTS ####
+
+## sxhkd & compositor & notifications, etc.
+/usr/bin/dunst &
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+dex -a -s /etc/xdg/autostart/:~/.config/autostart/ &
+picom --experimental-backends -CGb > /dev/null &
+xsetroot -cursor_name left_ptr &
+imwheel &
+
+## Personal stuff, blog, etc.
+# ~/.local/bin/blog-start.sh > /dev/null 2>&1 &
+
+## wal colors & program theming
+wal -i ~/Pictures/Wallpapers/ -e 
+source "${HOME}/.cache/wal/colors.sh" 
+xrdb ~/.cache/wal/colors.Xresources 
+/usr/bin/wpg -s "$wallpaper" -n 
+
+# Individual app theming
+# /usr/bin/pywalfox start &
+/usr/bin/pywalfox update &
+/usr/bin/wal-telegram --wal &
+/usr/bin/spicetify apply -q -n &
+
+## Polybar
+~/.config/polybar/hack/launch.sh &
+~/.config/polybar/hack/scripts/autopywal.sh &
+
+#### MISC CONFIG ####
+
+# Colors needed after sourcing
+bspc config normal_border_color "$color1"
+bspc config active_border_color "$color2"
+bspc config focused_border_color "$color15"
+bspc config presel_feedback_color "$color1"
+
+## Lock config
+export XSECURELOCK_DIM_COLOR="#1a1b26"
+export XSECURELOCK_PASSWORD_PROMPT=dancer
+export XSECURELOCK_FONT="Hack Nerd Font Mono"
+export XSECURELOCK_COMPOSITE_OBSCURER=0
+
+xset s on
+xset s 300 5
+xss-lock -n /usr/bin/xsecurelock/dimmer -l -- xsecurelock
+
+

@@ -1,0 +1,41 @@
+#+title: Elfeed
+#+author: Justin
+#+date: 2022-06-19
+
+* Root :elfeed:
+** entry-title: \(linux\|linus\|ubuntu\|kde\|gnome\|arch\) :linux:
+** Text
+*** Content Aggregators :agg:
+**** https://lobste.rs/rss :dev:
+**** https://news.ycombinator.com/rss :dev:
+*** Blogs
+**** Software / Programming :dev:
+***** Python :python:
+****** entry-title: \(python\)
+***** Rust :rust:
+****** entry-title: \(rust\)
+****** [[https://this-week-in-rust.org/rss.xml][This Week in Rust]] :summary:
+***** Emacs :emacs:
+****** entry-title: \(emacs\|org-mode\)
+****** https://emacsredux.com/atom.xml
+**** Substack :substack:
+***** https://astralcodexten.substack.com/feed
+***** https://freddiedeboer.substack.com/feed
+*** News :news:
+**** Top news :tops:
+Top News RSS feeds generally showing the most "notable" events for a day.
+***** [[https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml][New York Times]]
+***** [[https://www.theguardian.com/theguardian/mainsection/topstories/rss][The Guardian]]
+**** Politics :politics:
+***** [[https://fivethirtyeight.com/features/feed/][FiveThirtyEight]] :journalism:
+** Video :video:
+*** YouTube :youtube:
+Note that it doesn't naturally parse, and you need to enter the XML for
+elfeed-tube to pick it up. I've been using  https://rssbox.herokuapp.com to get
+the links.
+**** Gaming :gaming:
+**** Linux :linux:
+***** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCVls1GmFKf6WlTraIb_IaJg][DistroTube]]
+** Audio :audio:
+*** Podcasts :podcast:
+**** https://talkpython.fm/episodes/rss :python:

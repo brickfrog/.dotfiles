@@ -1,0 +1,10 @@
+VteTerminal, vte-terminal {
+    padding: 13px;
+    
+ }
+
+/*.nemo-places-sidebar .view { */ 
+.nemo-window .sidebar .viewr {
+  background-color: #FFFFFF;
+  color: @theme_fg_color;
+}

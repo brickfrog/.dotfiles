@@ -1,0 +1,14 @@
+{
+    "workbench.colorTheme": "Dracula",
+    "editor.fontFamily": "'JetBrainsMono Nerd Font', 'Droid Sans Mono', 'monospace', monospace",
+    "git.autofetch": true,
+    "git.enableSmartCommit": true,
+    "explorer.confirmDelete": false,
+    "explorer.confirmDragAndDrop": false,
+    "vscode-neovim.neovimInitVimPaths.linux": "~/.config/nvim/init.lua",
+    "vscode-neovim.neovimExecutablePaths.linux": "/usr/bin/nvim",
+    "editor.fontSize": 12,
+    "jupyter.pylanceHandlesNotebooks": true,
+    "jupyter.themeMatplotlibPlots": true,
+    "git.confirmSync": false
+}

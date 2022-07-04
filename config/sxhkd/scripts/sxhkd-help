@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Script to assist making a help menu for my sxhkd config in rofi
+
+awk '/^[a-z]/ && last {print "<small>",$0,"\t",last,"</small>"} {last=""} /^#/{last=$0}' ~/.config/sxhkd/sxhkdrc{,.common} |
+    column -t -s $'\t' |
+    rofi -dmenu -i -markup-rows -no-show-icons \
+          -width 1000 -lines 15 -yoffset 40 \
+          -font "Droid Sans Regular 13"
