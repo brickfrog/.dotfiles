@@ -18,4 +18,4 @@ occasions, bspwm/sxhkd/polybar with scripts for wal theming.
 
 ** Theme Sample
 
-[[attachment:_20220708_093315sample.png]]
+[[sample.png]]
