@@ -35,11 +35,9 @@ AUTO_NOTIFY_IGNORE+=("lf", "emacs", "kitty")
 # adding zoxide
 eval "$(zoxide init zsh)"
 
-# adding emacs
 export PATH="$HOME/.emacs.d/bin:$PATH"
-
-# local bin / npm
 export PATH=~/.local/bin/:~/.local/bin/npm-global/bin:$PATH
+export PATH=~/.cargo/bin:$PATH
 
 #### ALIASES ####
 

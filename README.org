@@ -1,0 +1,21 @@
+#+title: Readme
+#+author: Justin
+#+date: 2022-07-08
+
+* Justin's dotfiles
+
+These are my dotfiles, using [[https://github.com/thoughtbot/rcm][rcm]]. If you
+want to copy my config without using rcm, you could just clone and place the
+folders in the appropriate place, e.g.  =/.dotfiles/doom.d -> ~/.doom.d=
+
+* Notes :ATTACH:
+:PROPERTIES:
+:ID:       c7691611-40ba-482f-8665-8fbbfac90d6c
+:END:
+
+Note that I make use of emacs primarily, with nvim plugged into vscode for
+occasions, bspwm/sxhkd/polybar with scripts for wal theming.
+
+** Theme Sample
+
+[[attachment:_20220708_093315sample.png]]

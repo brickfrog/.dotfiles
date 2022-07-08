@@ -523,7 +523,7 @@ I couldn't resist the Email and Feed modules.
 #+name: doom-app
 #+begin_src emacs-lisp
 calendar                     ; A dated approach to timetabling
-;;emms                       ; Multimedia in Emacs is music to my ears
+;; emms                         ; Multimedia in Emacs is music to my ears
 everywhere                   ; *leave* Emacs!? You must be joking.
 ;; irc                       ; how neckbeards socialize
 (rss +org)                   ; emacs as an RSS reader
@@ -910,6 +910,7 @@ of unnecessary keystrokes --- we can simply bind common actions to a single key!
         :desc "Recent files" :ne "r" #'consult-recent-file
         :desc "Config dir" :ne "C" #'doom/open-private-config
         :desc "Open config.org" :ne "c" (cmd! (find-file (expand-file-name "config.org" doom-private-dir)))
+        :desc "Open elfeed summary" :ne "e" #'elfeed-summary
         :desc "Open dotfile" :ne "." (cmd! (doom-project-find-file "~/.config/"))
         :desc "Notes (roam)" :ne "n" #'org-roam-node-find
         :desc "Switch buffer" :ne "b" #'+vertico/switch-workspace-buffer
@@ -2998,7 +2999,67 @@ https://www.unwoundstack.com/doc/elfeed-score/curr#The-Score-File
 (elfeed-score-enable)
 (setq elfeed-score-serde-score-file "~/.doom.d/elfeed.score"))
 #+end_src
+*** Summary
 
+Adding a dashboard style [[https://github.com/SqrtMinusOne/elfeed-summary][summary]] into the newsfeed.
+#+begin_src emacs-lisp :tangle packages.el
+(package! elfeed-summary)
+#+end_src
+
+TODO: need to clean this up, using the template config from the git repo.
+#+begin_src emacs-lisp
+(setq elfeed-summary-settings
+      '((group (:title . "GitHub")
+               (:elements
+                (query . (url . "SqrtMinusOne.private.atom"))
+                (group . ((:title . "Guix packages")
+                          (:elements
+                           (query . (and github guix_packages)))
+                          (:hide t)))))
+        (group (:title . "Blogs [Software]")
+               (:elements
+                (query . software_blogs)))
+        (group (:title . "Blogs [People]")
+               (:elements
+                (query . (and blogs people (not emacs)))
+                (group (:title . "Emacs")
+                       (:elements
+                        (query . (and blogs people emacs))))))
+        (group (:title . "Podcasts")
+               (:elements
+                (query . podcast)))
+        (group (:title . "Videos")
+               (:elements
+                (group
+                 (:title . "Music")
+                 (:elements
+                  (query . (and videos music))))
+                (group
+                 (:title . "Tech")
+                 (:elements
+                  (query . (and videos tech))))
+                (group
+                 (:title . "History")
+                 (:elements
+                  (query . (and videos history))))
+                ;; ...
+                ))
+        ;; ...
+        (group (:title . "Miscellaneous")
+               (:elements
+                (group
+                 (:title . "Searches")
+                 (:elements
+                  (search
+                   (:filter . "@6-months-ago sqrtminusone")
+                   (:title . "About me"))
+                  (search
+                   (:filter . "+later")
+                   (:title . "Check later"))))
+                (group
+                 (:title . "Ungrouped")
+                 (:elements :misc))))))
+#+end_src
 *** Keybindings
 
 #+begin_src emacs-lisp
@@ -4098,7 +4159,6 @@ set up org-capture.
 #+begin_src emacs-lisp :noweb no-export
 (after! org-capture
   <<prettify-capture>>
-
   (defun +doct-icon-declaration-to-icon (declaration)
     "Convert :icon declaration to icon"
     (let ((name (pop declaration))
@@ -4111,7 +4171,7 @@ set up org-capture.
     "Add declaration's :icon to each template group in GROUPS."
     (let ((templates (doct-flatten-lists-in groups)))
       (setq doct-templates (mapcar (lambda (template)
-                                     (when-let* ((props (nthcdr (if (= (length template) 4) 2 5) template))
+                                    (when-let* ((props (nthcdr (if (= (length template) 4) 2 5) template))
                                                  (spec (plist-get (plist-get props :doct) :icon)))
                                        (setf (nth 1 template) (concat (+doct-icon-declaration-to-icon spec)
                                                                       "\t"
@@ -4133,13 +4193,6 @@ set up org-capture.
                    :type entry
                    :template ("* TODO %?"
                               "%i %a"))
-                  ("Protocol" :keys "l"
-                   :icon ("checklist" :set "octicon" :color "red")
-                   :file +org-capture-todo-file
-                   :prepend t
-                   :headline "Interesting"
-                   :type entry
-                   :template ("* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?"))
                   ("Interesting" :keys "i"
                    :icon ("eye" :set "faicon" :color "lcyan")
                    :file +org-capture-todo-file
@@ -4591,7 +4644,7 @@ Jethro Kuan's function for parsing references.
                                        ":PROPERTIES:
 :ROAM_REFS: [cite:@${citekey}]
 :END:
-,#+title: ${title}\n")
+,#+title: ${title}\n#+created: %U\n#+last_modified: %U\n")
                             :immediate-finish t
                             :unnarrowed t))
                          :info (list :citekey (car keys-entries))
@@ -4604,7 +4657,7 @@ Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-htm
 
 By default, Org generated heading IDs like =#org80fc2a5= which ... works, but has
 two issues
-+ It's completely uninformative, I have no idea what's being referenced
++ It's uninformative, I have no idea what's referenced
 + If I export the same file, everything will change.
   Now, while without hardcoded values it's impossible to set references in
   stone, it would be nice for there to be a decent chance of staying the same.

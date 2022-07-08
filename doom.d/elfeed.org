@@ -38,4 +38,7 @@ the links.
 ***** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCVls1GmFKf6WlTraIb_IaJg][DistroTube]]
 ** Audio :audio:
 *** Podcasts :podcast:
+I've seen workflows that allow for mpd/mpc and emms to listen to podcasts inside
+emacs but it seemed fiddly. I plan to list podcasts that have
+ancillary content here, otherwise I'll use a dedicated podcasting app.
 **** https://talkpython.fm/episodes/rss :python:
