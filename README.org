@@ -1,21 +1,41 @@
-#+title: Readme
+#+title: .dotfiles
 #+author: Justin
 #+date: 2022-07-08
 
-* Justin's dotfiles
-
 These are my dotfiles, using [[https://github.com/thoughtbot/rcm][rcm]]. If you
 want to copy my config without using rcm, you could just clone and place the
-folders in the appropriate place, e.g.  =/.dotfiles/doom.d -> ~/.doom.d=
+folders in the appropriate place, e.g.  =/.dotfiles/doom.d -> ~/.doom.d=.
+
+This isn't all-encompassing, as there's probably some python scripts and such
+that aren't included, but I trust you'll be able to find the respective files if needed.
 
 * Notes :ATTACH:
 :PROPERTIES:
 :ID:       c7691611-40ba-482f-8665-8fbbfac90d6c
 :END:
 
+|              |                            |
+|--------------+----------------------------|
+| **OS:**        | Arch (endeavourOS)         |
+| **Shell:**     | zsh + ohmyzsh              |
+| **WM:**        | bspwm + polybar            |
+| **Editor:**    | Doom Emacs / nvim / vscode |
+| **Terminal:**  | kitty                      |
+| **Launcher:**  | rofi                       |
+| **Browser:**   | vivaldi / firefox          |
+| **GTK Theme:** | [[https://github.com/jasperro/FlatColor][Flatcolor]]                  |
+
 Note that I make use of emacs primarily, with nvim plugged into vscode for
-occasions, bspwm/sxhkd/polybar with scripts for wal theming.
+occasions, bspwm/sxhkd/polybar with scripts for wal theming. Not -as- cohesive
+as I like, but I enjoy changing colors too much to get super picky about one thing.
 
 ** Theme Sample
 
 [[sample.png]]
+
+** Thanks (because I basically used your stuff)
+
+- Primarily to tecosaur, whose [[tecosaur.github.io/emacs-config/config.html][config]] for emacs I used as a base (and who is
+  also a maintainer for quite a bit of the modules)
+- [[https://github.com/hlissner][Henrik Lissner]], for making doom emacs, which I probably wouldn't have spent
+  the time to jump into if not for the ease of use.
