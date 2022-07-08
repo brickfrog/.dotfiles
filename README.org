@@ -16,14 +16,14 @@ that aren't included, but I trust you'll be able to find the respective files if
 
 |              |                            |
 |--------------+----------------------------|
-| **OS:**        | Arch (endeavourOS)         |
-| **Shell:**     | zsh + ohmyzsh              |
-| **WM:**        | bspwm + polybar            |
-| **Editor:**    | Doom Emacs / nvim / vscode |
-| **Terminal:**  | kitty                      |
-| **Launcher:**  | rofi                       |
-| **Browser:**   | vivaldi / firefox          |
-| **GTK Theme:** | [[https://github.com/jasperro/FlatColor][Flatcolor]]                  |
+| *OS:*        | Arch (endeavourOS)         |
+| *Shell:*     | zsh + ohmyzsh              |
+| *WM:*        | bspwm + polybar            |
+| *Editor:*    | Doom Emacs / nvim / vscode |
+| *Terminal:*  | kitty                      |
+| *Launcher:*  | rofi                       |
+| *Browser:*   | vivaldi / firefox          |
+| *GTK Theme:* | [[https://github.com/jasperro/FlatColor][Flatcolor]]                  |
 
 Note that I make use of emacs primarily, with nvim plugged into vscode for
 occasions, bspwm/sxhkd/polybar with scripts for wal theming. Not -as- cohesive
