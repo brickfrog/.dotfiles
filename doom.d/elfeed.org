@@ -2,32 +2,71 @@
 #+author: Justin
 #+date: 2022-06-19
 
+Okay, so, org-mode nodes represent topics parsed into the RSS reader (elfeed),
+with feeds assigned tags by their parent headings. I'm also including my
+favorite articles by a specific post with lists that aren't parsed. So this
+might be of use for anyone who wanders into it without religiously using elfeed.
+
 * Root :elfeed:
-** entry-title: \(linux\|linus\|ubuntu\|kde\|gnome\|arch\) :linux:
+
 ** Text
+*** General Rules
+**** entry-title: \(linux\|linus\|ubuntu\|kde\|gnome\|arch\) :linux:
 *** Content Aggregators :agg:
-**** https://lobste.rs/rss :dev:
-**** https://news.ycombinator.com/rss :dev:
-*** Blogs
-**** Software / Programming :dev:
-***** Python :python:
-****** entry-title: \(python\)
-***** Rust :rust:
-****** entry-title: \(rust\)
-****** [[https://this-week-in-rust.org/rss.xml][This Week in Rust]] :summary:
-***** Emacs :emacs:
-****** entry-title: \(emacs\|org-mode\)
-****** https://emacsredux.com/atom.xml
-**** Substack :substack:
-***** https://astralcodexten.substack.com/feed
-***** https://freddiedeboer.substack.com/feed
+****  Dev / Software :dev:
+***** https://lobste.rs/rss
+***** https://news.ycombinator.com/rss
+*** Blogs :blog:
+**** Topic Based
+***** Software / Programming :dev:
+****** Python :python:
+******* entry-title: \(python\)
+****** Rust :rust:
+******* entry-title: \(rust\)
+******* [[https://this-week-in-rust.org/rss.xml][This Week in Rust]] :summary:
+****** Emacs :emacs:
+******* entry-title: \(emacs\|org-mode\)
+******* https://emacsredux.com/atom.xml
+**** Person Based
+Blogs centered around a specific writer/group.
+***** Ingroup :ingroup:
+This is more people that are in the same intellectual spheres and such.
+****** http://www.aaronsw.com/weblog/index.xml
+****** https://danwang.co/feed/
+****** https://slatestarcodex.com/feed/
+****** https://zerohplovecraft.wordpress.com/feed/
+****** http://feeds.feedburner.com/thelastpsychiatrist/fLMy?format=xml
+****** https://feeds.feedblitz.com/marginalrevolution&x=1 :economics:
+****** https://fantasticanachronism.com/atom.xml
+****** https://nintil.com/rss.xml
+****** https://danluu.com/atom.xml
+****** https://www.ribbonfarm.com/feed/
+****** https://hotelconcierge.tumblr.com/rss
+****** Substack :substack:
+******* https://astralcodexten.substack.com/feed
+-  https://astralcodexten.substack.com/p/heuristics-that-almost-always-work
+******* https://freddiedeboer.substack.com/feed
+******* https://sashachapin.substack.com/feed
+******* https://www.strangeloopcanon.com/feed
+******* https://erikhoel.substack.com/feed
+******* https://www.blockedandreported.org/feed
+This is a podcast, but it's sometimes there's supplementary info that's in the posts.
+******* https://www.piratewires.com/feed
+***** Other
+****** http://boston.conman.org/bostondiaries.rss
+A blog I found while reading about the gemini protocol.
 *** News :news:
+The news is probably a  [[http://www.aaronsw.com/weblog/hatethenews][waste of time]]. Limiting it down to specific publications
+relevant to my interest/career.
 **** Top news :tops:
 Top News RSS feeds generally showing the most "notable" events for a day.
-***** [[https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml][New York Times]]
-***** [[https://www.theguardian.com/theguardian/mainsection/topstories/rss][The Guardian]]
+NOTE: keeping this here for maybe future use, otherwise, just get your friends
+to tell you what's going on
 **** Politics :politics:
 ***** [[https://fivethirtyeight.com/features/feed/][FiveThirtyEight]] :journalism:
+** Comics :comic:
+*** Webcomic
+****  https://www.smbc-comics.com/comic/rss
 ** Video :video:
 *** YouTube :youtube:
 Note that it doesn't naturally parse, and you need to enter the XML for

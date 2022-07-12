@@ -1,0 +1,2238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2019-10-29 Tue 11:56 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ob-julia: high quality julia org-mode support</title>
+<meta name="generator" content="Org mode" />
+<meta name="author" content="Nicolò Balzarotti" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<style>pre.src-julia:before { content: 'julia'; }</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">ob-julia: high quality julia org-mode support</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org36bfcd8">1. ob-julia</a></li>
+<li><a href="#orgabd302e">2. How it works</a></li>
+<li><a href="#org2d55a4b">3. Implemented features</a>
+<ul>
+<li><a href="#org08ced76">3.1. Session (<code>:session none</code>, <code>:session</code>, <code>:session session-name</code>)</a></li>
+<li><a href="#org6b34a8f">3.2. Async (<code>:async</code> <code>:async yes</code>, <code>:async t</code>)</a></li>
+<li><a href="#org1cc6d26">3.3. Variables input (<code>:var</code>), Standard output</a>
+<ul>
+<li><a href="#org3dc535d">3.3.1. Inputs</a></li>
+</ul>
+</li>
+<li><a href="#orgcc48829">3.4. Directory (<code>:dir</code>)</a></li>
+<li><a href="#org45b73dd">3.5. Error management</a></li>
+<li><a href="#org6e84a66">3.6. Using (<code>:using</code>) and Import (<code>:import</code>)</a></li>
+<li><a href="#org1053058">3.7. Results (<code>:results output</code>, <code>:results file</code>, )</a></li>
+<li><a href="#orgce3b792">3.8. Supported Types</a></li>
+<li><a href="#org4346a6b">3.9. File output &amp; Inlining</a>
+<ul>
+<li><a href="#org58644e0">3.9.1. Inlining (<code>:inline no</code>, <code>:inline</code>, <code>:inline format</code>)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgde8118c">4. Issues and Missing features</a></li>
+<li><a href="#orgcbcfb68">5. Credits</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org36bfcd8" class="outline-2">
+<h2 id="org36bfcd8"><span class="section-number-2">1</span> ob-julia</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+See <a href="#org2d55a4b">3</a> for more details.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgabd302e" class="outline-2">
+<h2 id="orgabd302e"><span class="section-number-2">2</span> How it works</h2>
+<div class="outline-text-2" id="text-2">
+<ol class="org-ol">
+<li>Code block is saved to a temporary file (under /tmp)</li>
+<li>Decide whether we need to start a new julia process or not
+<ol class="org-ol">
+<li>If session is "none", don't use a session (code under /tmp will
+be passed to <code>julia -L initfile src-block.jl</code>). This does not
+require ess. The command is customized by
+<code>org-babel-julia-command</code>)</li>
+<li>If session is nil, use default session name
+(customized by <code>org-babel-julia-default-session</code>)</li>
+<li>If session has a values, use it's name</li>
+</ol></li>
+<li>Check if we want to use a session or not. Check if the session
+exists. Start the session accordingly.</li>
+<li>Is the evaluation async?
+<ol class="org-ol">
+<li>YES:
+<ol class="org-ol">
+<li>Register a filter function</li>
+<li>Return immediately, printing a ref to the evaluation.  
+The ref is in the form: <code>julia-async:$uuid:$tmpfile</code>
+<ul class="org-ul">
+<li>uuid: identifier of this evaluation, used to find out where to
+insert again results</li>
+<li>tmpfile: the path where the output will be saved. This is
+useful both for debugging purposes and so that we do not need
+to store an object that maps computations to files. The
+process-filter look for the uuid, and then inserts <code>$tmpfile</code>.</li>
+</ul></li>
+</ol></li>
+<li>NO: Run the code, wait for the results. Insert the results.</li>
+</ol></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org2d55a4b" class="outline-2">
+<h2 id="org2d55a4b"><span class="section-number-2">3</span> Implemented features</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+<div id="outline-container-org08ced76" class="outline-3">
+<h3 id="org08ced76"><span class="section-number-3">3.1</span> Session (<code>:session none</code>, <code>:session</code>, <code>:session session-name</code>)</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+By default code is executed without a session. The advantage is that
+you do not requires <code>emacs-ess</code> to run julia code with ob-julia. But
+sessions (especially for julia, where speed comes from compiled code)
+are available. The same behaviour is obtained by setting the <code>:session</code>
+header to <code>none</code>.
+</p>
+
+<p>
+You can enable sessions with the <code>:session</code> argument. Without
+parameters, the session used is named after
+<code>org-babel-julia-default-session</code> (<code>*julia*</code> by default). With a
+parameter, the name is earmuffed (a star is prepended and appended).
+</p>
+
+<p>
+The REPL is kept sane. There's no cluttering (you don't see all the
+code executed that is required by ob-julia to have results), history
+is preserved (you can <code>C-S-up</code> to see the list of org-src block
+evaluated), and results are shown (this can be customized by
+<code>org-babel-julia-silent-repl</code>).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6b34a8f" class="outline-3">
+<h3 id="org6b34a8f"><span class="section-number-3">3.2</span> Async (<code>:async</code> <code>:async yes</code>, <code>:async t</code>)</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Async works both with and without <code>:session</code>.
+</p>
+
+<p>
+The best combination of features is combining session with
+<code>:async</code>. Async allows code evaluation in background (you can continue
+using emacs while julia compute results). 
+</p>
+
+<p>
+You can change buffer or even narrow it while the evaluation
+completes: the result is added automatically as soon as julia
+finishes. Multiple evaluation are queued automatically (thanks to
+ess). Cache is supported (evaluating the same code-block twice does
+not re-trigger evaluation, even if the code is still running).
+</p>
+
+<p>
+It's not possible to have async blocks with <code>:results silent</code>. I'm
+currently using this to distinguish between active src block and
+variable resolution (when a <code>:var</code> refer to an async block, the block
+cannot be executed asynchonously. So we need to distinguish between
+the two. This is the only way I was able to find, if you know better
+please tell me).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">sleep(1)
+<span style="color: #8b2252;">"It works!"</span>
+</pre>
+</div>
+
+<pre class="example">
+It works!
+</pre>
+
+
+<div class="org-src-container">
+<pre class="src src-julia">sleep(1)
+<span style="color: #8b2252;">"It works!"</span>
+</pre>
+</div>
+
+<pre class="example">
+It works!
+</pre>
+
+
+<p>
+Here the same, without the session
+</p>
+<div class="org-src-container">
+<pre class="src src-julia">sleep(1)
+<span style="color: #8b2252;">"It works!"</span>
+</pre>
+</div>
+
+<pre class="example">
+It works!
+</pre>
+
+
+<div class="org-src-container">
+<pre class="src src-julia">sleep(1)
+<span style="color: #8b2252;">"It works!"</span>
+</pre>
+</div>
+
+<pre class="example">
+It works!
+</pre>
+
+
+
+<p>
+Asynchronous evaluation is automatically disabled on export, or when a
+code block depends on one (<code>:var</code>)
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1cc6d26" class="outline-3">
+<h3 id="org1cc6d26"><span class="section-number-3">3.3</span> Variables input (<code>:var</code>), Standard output</h3>
+<div class="outline-text-3" id="text-3-3">
+</div>
+<div id="outline-container-org3dc535d" class="outline-4">
+<h4 id="org3dc535d"><span class="section-number-4">3.3.1</span> Inputs</h4>
+<div class="outline-text-4" id="text-3-3-1">
+<p>
+Those are example inputs that will be used later, to check whether
+import+export pipeline works as expected.
+</p>
+
+<p>
+A table
+</p>
+
+<table id="org35deea2" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">a</th>
+<th scope="col" class="org-right">b</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+A matrix (no hline)
+</p>
+
+<table id="org145e0c5" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+A column
+</p>
+
+<table id="orge510b86" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+A row
+</p>
+
+<table id="org9a52593" border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+A list
+</p>
+
+<ul class="org-ul">
+<li>1</li>
+<li>2</li>
+<li>3</li>
+<li>4</li>
+</ul>
+</div>
+
+<ol class="org-ol">
+<li><a id="orgcadfe14"></a>Table<br />
+<div class="outline-text-5" id="text-3-3-1-1">
+<div class="org-src-container">
+<pre class="src src-julia">table
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">a</th>
+<th scope="col" class="org-right">b</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+As you can see, the table automatically adds the hline after the
+header. This is a heuristic that might fail (might be triggered for
+matrix, might not trigger on tables), so you can manually
+force/disable it with the <code>:results table</code> or <code>:results matrix</code> param.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">table
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">a</td>
+<td class="org-right">b</td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+
+<li><a id="orgd402086"></a>Row<br />
+<div class="outline-text-5" id="text-3-3-1-2">
+<p>
+Column, Rows, and Matrix export works just fine (tests in session sync, session async
+and without session).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia" id="org5f960b7">row
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+
+<div class="org-src-container">
+<pre class="src src-julia" id="orgb68478b">row
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+
+<div class="org-src-container">
+<pre class="src src-julia" id="org7733fbb">row
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+
+<li><a id="org3180867"></a>Column<br />
+<div class="outline-text-5" id="text-3-3-1-3">
+<p>
+Works both with synchronous evaluation
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia" id="org3c1fdbd">column
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+asynchronous evaluation
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia" id="org04805eb">column
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+and without a session
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia" id="org5628a9d">column
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+
+<li><a id="org14530c2"></a>Matrix<br />
+<div class="outline-text-5" id="text-3-3-1-4">
+<p>
+Sync
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia" id="orgf312a0d">matrix
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Just like for tables, you can control header hline line with the
+results param.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">matrix
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">1</th>
+<th scope="col" class="org-right">2</th>
+<th scope="col" class="org-right">3</th>
+<th scope="col" class="org-right">4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Async
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia" id="orga168090">matrix
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+No session
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia" id="org40d06a2">matrix
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">1</th>
+<th scope="col" class="org-right">2</th>
+<th scope="col" class="org-right">3</th>
+<th scope="col" class="org-right">4</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+
+<li><a id="orgfe7813a"></a>List<br />
+<div class="outline-text-5" id="text-3-3-1-5">
+<p>
+List are parsed as columns
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">list
+</pre>
+</div>
+
+<p>
+<code>:results list</code> return the list (just like R). It's not perfect with
+</p>
+<div class="org-src-container">
+<pre class="src src-julia">list
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>(1)</li>
+<li>(2)</li>
+<li>(3)</li>
+<li>(4)</li>
+</ul>
+</div>
+</li>
+
+<li><a id="orgb2b4371"></a>Table<br />
+<div class="outline-text-5" id="text-3-3-1-6">
+<p>
+There are two ways in which tables can be passed to Julia:
+</p>
+<ul class="org-ul">
+<li>Array{NamedTuple}</li>
+<li>Dictionary</li>
+</ul>
+
+<p>
+I like the NamedTuple approach, but if you don't like it you can
+customize the variable <code>org-babel-julia-table-as-dict</code>. In both cases,
+if you <a href="#org6e84a66">:import</a> DataFrames, you can construct a DataFrame from both.
+</p>
+
+<p>
+TOOD: I miss the julia code for printing Array{NamedTuple}.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">table
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">a</th>
+<th scope="col" class="org-right">b</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">1</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Also, it's nice that a single NamedTuple can represent a table:
+</p>
+<div class="org-src-container">
+<pre class="src src-julia">table[2]
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">a</th>
+<th scope="col" class="org-right">b</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">2</td>
+<td class="org-right">2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-orgcc48829" class="outline-3">
+<h3 id="orgcc48829"><span class="section-number-3">3.4</span> Directory (<code>:dir</code>)</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+Each source block is evaluated in it's :dir param
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">pwd()
+</pre>
+</div>
+
+<pre class="example">
+/tmp
+</pre>
+
+
+<div class="org-src-container">
+<pre class="src src-julia">pwd()
+</pre>
+</div>
+
+<pre class="example">
+/
+</pre>
+
+
+<p>
+If unspecified, the directory is session's one
+</p>
+<div class="org-src-container">
+<pre class="src src-julia">pwd()
+</pre>
+</div>
+
+<pre class="example">
+/home/nixo/dotfiles/emacs/.emacs.d/extra/ob-julia
+</pre>
+
+
+<p>
+Changing dir from julia code still works
+</p>
+<div class="org-src-container">
+<pre class="src src-julia">cd(<span style="color: #8b2252;">"/"</span>)
+realpath(<span style="color: #8b2252;">"."</span>)
+</pre>
+</div>
+
+<pre class="example">
+/
+</pre>
+
+
+<p>
+but is ephemeral (like fort the <code>:dir</code> param)
+</p>
+<div class="org-src-container">
+<pre class="src src-julia">realpath(<span style="color: #8b2252;">"."</span>)
+</pre>
+</div>
+
+<pre class="example">
+/home/nixo/dotfiles/emacs/.emacs.d/extra/ob-julia
+</pre>
+
+
+<p>
+This is obtained by wrapping the src block in a <code>cd()</code> call:
+</p>
+<div class="org-src-container">
+<pre class="src src-julia">cd(folder) <span style="color: #a020f0;">do</span>
+   block
+<span style="color: #a020f0;">end</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org45b73dd" class="outline-3">
+<h3 id="org45b73dd"><span class="section-number-3">3.5</span> Error management</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+If the block errors out, 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia" id="org35390b6">x
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">ERROR</td>
+<td class="org-left">UndefVarError(:x)</td>
+</tr>
+</tbody>
+</table>
+
+<div class="org-src-container">
+<pre class="src src-julia" id="org9e87d69">1 + <span style="color: #8b2252;">"ciao"</span>
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">ERROR</td>
+<td class="org-left">MethodError(+</td>
+<td class="org-left">(1</td>
+<td class="org-left">ciao)</td>
+<td class="org-right">0x0000000000006426)</td>
+</tr>
+</tbody>
+</table>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">ERROR</td>
+<td class="org-left">MethodError(+</td>
+<td class="org-left">(1</td>
+<td class="org-left">ciao)</td>
+<td class="org-right">0x0000000000006420)</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+It works in async
+</p>
+<div class="org-src-container">
+<pre class="src src-julia">x
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">ERROR</td>
+<td class="org-left">UndefVarError(:x)</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+On external process (sync)
+</p>
+<div class="org-src-container">
+<pre class="src src-julia">x
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">ERROR</td>
+<td class="org-left">UndefVarError(:x)</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+and on external process (async)
+</p>
+<div class="org-src-container">
+<pre class="src src-julia">x
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">ERROR</td>
+<td class="org-left">UndefVarError(:x)</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Error management can still be improved for helping with debug (see
+scimax).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6e84a66" class="outline-3">
+<h3 id="org6e84a66"><span class="section-number-3">3.6</span> Using (<code>:using</code>) and Import (<code>:import</code>)</h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+To include dependencies, you can use <code>:using</code> and <code>:import</code>.
+</p>
+
+<p>
+Because of how the julia code is actually implemented, in order to use
+specialized exports (e.g., DataFrames, see ) you need the
+modules to be available <span class="underline">before</span> the block gets evaluated. The problem
+can be solved in 2 (or 3 ways):
+</p>
+<ul class="org-ul">
+<li>Evaluating a block with using/import, then the other block</li>
+<li>Using the header arguments</li>
+<li>Fixing the Julia code :D</li>
+</ul>
+
+<p>
+to use <code>:import</code>, you need to pass arguments quoted:
+</p>
+<pre class="example">
+:using DataFrames Query :import "FileIO: load" "Plots: plot"
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org1053058" class="outline-3">
+<h3 id="org1053058"><span class="section-number-3">3.7</span> Results (<code>:results output</code>, <code>:results file</code>, )</h3>
+<div class="outline-text-3" id="text-3-7">
+<p>
+The default is to return the value:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">10
+</pre>
+</div>
+
+<pre class="example">
+10
+</pre>
+
+
+<p>
+If results is output, it's included the stdout (what's printed in the
+terminal). (This part still needs some work to be useful.)
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">10
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-julia">println(10)
+</pre>
+</div>
+
+<pre class="example">
+10
+</pre>
+
+
+<div class="org-src-container">
+<pre class="src src-julia">println(<span style="color: #8b2252;">"a"</span>)
+
+<span style="color: #8b2252;">"10"</span>
+
+println(<span style="color: #8b2252;">"b"</span>)
+</pre>
+</div>
+
+<pre class="example">
+a
+b
+</pre>
+
+
+<p>
+Error (results output)
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">This will throw an error
+</pre>
+</div>
+
+<pre class="example">
+Base.Meta.ParseError("extra token \"will\" after end of expression")
+</pre>
+
+
+<p>
+Another error (result ouptut)
+</p>
+<div class="org-src-container">
+<pre class="src src-julia">print(one(3,3))
+</pre>
+</div>
+
+<pre class="example">
+MethodError(one, (3, 3), 0x0000000000006426)
+</pre>
+
+
+<p>
+A matrix
+</p>
+<div class="org-src-container">
+<pre class="src src-julia">print(ones(3,3))
+</pre>
+</div>
+
+<pre class="example">
+[1.0 1.0 1.0; 1.0 1.0 1.0; 1.0 1.0 1.0]
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgce3b792" class="outline-3">
+<h3 id="orgce3b792"><span class="section-number-3">3.8</span> Supported Types</h3>
+<div class="outline-text-3" id="text-3-8">
+<p>
+Adding new types is easy (you need to define an <code>orgshow()</code> function for
+your type. See <a href="init.jl#MissingReference">init.jl</a>). There's a simple mechanism that allows to
+define method on non-yet-existing types <a href="init.jl#MissingReference">example</a>.
+</p>
+
+<p>
+The current version supports a couple of useful type: DataFrames and
+Plots. ob-julia needs community support to add more types: please help!
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4346a6b" class="outline-3">
+<h3 id="org4346a6b"><span class="section-number-3">3.9</span> File output &amp; Inlining</h3>
+<div class="outline-text-3" id="text-3-9">
+<p>
+There's native support for writing output to file. For unkown file
+types, instead of inserting the output in the buffer it's written to the file.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">zeros(3,3)
+</pre>
+</div>
+
+<p>
+<a href="readme/output.html">readme/output.html</a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">zeros(3,3)
+</pre>
+</div>
+
+<p>
+<a href="readme/output.csv">readme/output.csv</a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia"><span style="color: #228b22;">Dict</span>(10 =&gt; 10)
+</pre>
+</div>
+
+<p>
+<a href="readme/output.csv">readme/output.csv</a>
+</p>
+
+<p>
+Saving plots requires the Plots library. You can require it with the
+<code>:using</code> <a href="#org6e84a66">header</a>. There's the custom <code>:size "tuple"</code> header argument for
+specifying the output size. It <span class="underline">must</span> be placed inside parentheses, and
+it's evaluated as julia object (that means it can contains variables
+and expressions).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">plot(matrix)
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="readme/output-plot.png" alt="output-plot.png" />
+</p>
+</div>
+
+<p>
+Matrix also has an automatic conversion (when Plots is loaded), so you
+don't even need to pass it to the <code>plot()</code> function (there's a generic
+fallback that tries to plot anything saved to png or svg).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">matrix
+</pre>
+</div>
+
+
+<div class="figure">
+<p><object type="image/svg+xml" data="readme/output-matrix.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+
+<p>
+Plots can also manage errors (in a visually-disturbing way).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">this_is_undefined
+</pre>
+</div>
+
+
+<div class="figure">
+<p><object type="image/svg+xml" data="readme/output-undef.svg" class="org-svg">
+Sorry, your browser does not support SVG.</object>
+</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-julia">another_undefined_but_async
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="readme/output-undef.png" alt="output-undef.png" />
+</p>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-julia" id="org998d143">DataFrame(x = 1:10, y = (0:9) .+ <span style="color: #8b2252;">'a'</span>)
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">x</th>
+<th scope="col" class="org-left">y</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">a</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">b</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">c</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">d</td>
+</tr>
+
+<tr>
+<td class="org-right">5</td>
+<td class="org-left">e</td>
+</tr>
+
+<tr>
+<td class="org-right">6</td>
+<td class="org-left">f</td>
+</tr>
+
+<tr>
+<td class="org-right">7</td>
+<td class="org-left">g</td>
+</tr>
+
+<tr>
+<td class="org-right">8</td>
+<td class="org-left">h</td>
+</tr>
+
+<tr>
+<td class="org-right">9</td>
+<td class="org-left">i</td>
+</tr>
+
+<tr>
+<td class="org-right">10</td>
+<td class="org-left">j</td>
+</tr>
+</tbody>
+</table>
+
+<div class="org-src-container">
+<pre class="src src-julia">DataFrame(table)
+</pre>
+</div>
+
+<p>
+<a href="readme/output-table.csv">readme/output-table.csv</a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">data
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-right">x</th>
+<th scope="col" class="org-left">y</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-left">a</td>
+</tr>
+
+<tr>
+<td class="org-right">2</td>
+<td class="org-left">b</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-left">c</td>
+</tr>
+
+<tr>
+<td class="org-right">4</td>
+<td class="org-left">d</td>
+</tr>
+
+<tr>
+<td class="org-right">5</td>
+<td class="org-left">e</td>
+</tr>
+
+<tr>
+<td class="org-right">6</td>
+<td class="org-left">f</td>
+</tr>
+
+<tr>
+<td class="org-right">7</td>
+<td class="org-left">g</td>
+</tr>
+
+<tr>
+<td class="org-right">8</td>
+<td class="org-left">h</td>
+</tr>
+
+<tr>
+<td class="org-right">9</td>
+<td class="org-left">i</td>
+</tr>
+
+<tr>
+<td class="org-right">10</td>
+<td class="org-left">j</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+<div id="outline-container-org58644e0" class="outline-4">
+<h4 id="org58644e0"><span class="section-number-4">3.9.1</span> Inlining (<code>:inline no</code>, <code>:inline</code>, <code>:inline format</code>)</h4>
+<div class="outline-text-4" id="text-3-9-1">
+<p>
+Output to file and Inlining are different things but nicely fit
+together to solve the same problem: inserting images or other objects
+inside the buffer.
+</p>
+
+<p>
+If your type can be represented inside the exported format (like
+images as svg/base-64 encoded pngs inside <code>.html</code>, tex plots in a <code>.tex</code>
+file), the <code>:inline</code> header is what you need. The behaviour changes
+based depending on your interactive use and on the desired output
+format.
+</p>
+
+<p>
+TODO: right now :results raw is required on export. How do we fix it?
+</p>
+
+<p>
+Examples: :inline keyword alone, in interactive evaluation, the output
+inserted in the buffer is the usual.
+</p>
+<div class="org-src-container">
+<pre class="src src-julia">matrix
+</pre>
+</div>
+
+<p>
+<table style="width:100%"><tr><th>1</th><th>2</th><th>3</th><th>4</tr><tr><th>1</th><th>2</th><th>3</th><th>4</table>
+</p>
+
+<p>
+But when you export the output to html, the output will be processed
+<span class="underline">by julia</span>, and inserted in the buffer (or a different representation
+for different export formats).  This is not of much use with tables
+(even if you can customize the export, e.g. by passing the :width
+keyword), but is wonderful for pictures. If a result can be inserted
+in multiple ways (picture in html can be both inline png or svg), you
+can specify the desired format by passing the argument to the :inline
+keyword (like <code>:inline svg</code>). In this case, the processed output is
+inserted also in interactive sessions.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">matrix
+</pre>
+</div>
+
+<p>
+<table style="width:10%"><tr><th>1</th><th>2</th><th>3</th><th>4</tr><tr><th>1</th><th>2</th><th>3</th><th>4</table>
+</p>
+
+<p>
+Plots default to inline png
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">plot(matrix)
+</pre>
+</div>
+
+<p>
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="600" height="400" viewBox="0 0 2400 1600">
+<defs>
+  <clipPath id="clip0700">
+    <rect x="0" y="0" width="2400" height="1600"/>
+  </clipPath>
+</defs>
+<path clip-path="url(#clip0700)" d="
+M0 1600 L2400 1600 L2400 0 L0 0  Z
+  " fill="#ffffff" fill-rule="evenodd" fill-opacity="1"/>
+<defs>
+  <clipPath id="clip0701">
+    <rect x="480" y="0" width="1681" height="1600"/>
+  </clipPath>
+</defs>
+<path clip-path="url(#clip0700)" d="
+M113.754 1487.47 L2352.76 1487.47 L2352.76 47.2441 L113.754 47.2441  Z
+  " fill="#ffffff" fill-rule="evenodd" fill-opacity="1"/>
+<defs>
+  <clipPath id="clip0702">
+    <rect x="113" y="47" width="2240" height="1441"/>
+  </clipPath>
+</defs>
+<polyline clip-path="url(#clip0702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  177.122,1487.47 177.122,47.2441 
+  "/>
+<polyline clip-path="url(#clip0702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  705.189,1487.47 705.189,47.2441 
+  "/>
+<polyline clip-path="url(#clip0702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  1233.26,1487.47 1233.26,47.2441 
+  "/>
+<polyline clip-path="url(#clip0702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  1761.32,1487.47 1761.32,47.2441 
+  "/>
+<polyline clip-path="url(#clip0702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  2289.39,1487.47 2289.39,47.2441 
+  "/>
+<polyline clip-path="url(#clip0702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  113.754,1446.71 2352.76,1446.71 
+  "/>
+<polyline clip-path="url(#clip0702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  113.754,993.811 2352.76,993.811 
+  "/>
+<polyline clip-path="url(#clip0702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  113.754,540.908 2352.76,540.908 
+  "/>
+<polyline clip-path="url(#clip0702)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  113.754,88.0053 2352.76,88.0053 
+  "/>
+<polyline clip-path="url(#clip0700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  113.754,1487.47 2352.76,1487.47 
+  "/>
+<polyline clip-path="url(#clip0700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  113.754,1487.47 113.754,47.2441 
+  "/>
+<polyline clip-path="url(#clip0700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  177.122,1487.47 177.122,1465.87 
+  "/>
+<polyline clip-path="url(#clip0700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  705.189,1487.47 705.189,1465.87 
+  "/>
+<polyline clip-path="url(#clip0700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  1233.26,1487.47 1233.26,1465.87 
+  "/>
+<polyline clip-path="url(#clip0700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  1761.32,1487.47 1761.32,1465.87 
+  "/>
+<polyline clip-path="url(#clip0700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  2289.39,1487.47 2289.39,1465.87 
+  "/>
+<polyline clip-path="url(#clip0700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  113.754,1446.71 147.339,1446.71 
+  "/>
+<polyline clip-path="url(#clip0700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  113.754,993.811 147.339,993.811 
+  "/>
+<polyline clip-path="url(#clip0700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  113.754,540.908 147.339,540.908 
+  "/>
+<polyline clip-path="url(#clip0700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  113.754,88.0053 147.339,88.0053 
+  "/>
+<g clip-path="url(#clip0700)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:middle;" transform="rotate(0, 177.122, 1541.47)" x="177.122" y="1541.47">1.00</text>
+</g>
+<g clip-path="url(#clip0700)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:middle;" transform="rotate(0, 705.189, 1541.47)" x="705.189" y="1541.47">1.25</text>
+</g>
+<g clip-path="url(#clip0700)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:middle;" transform="rotate(0, 1233.26, 1541.47)" x="1233.26" y="1541.47">1.50</text>
+</g>
+<g clip-path="url(#clip0700)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:middle;" transform="rotate(0, 1761.32, 1541.47)" x="1761.32" y="1541.47">1.75</text>
+</g>
+<g clip-path="url(#clip0700)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:middle;" transform="rotate(0, 2289.39, 1541.47)" x="2289.39" y="1541.47">2.00</text>
+</g>
+<g clip-path="url(#clip0700)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:end;" transform="rotate(0, 89.7545, 1464.21)" x="89.7545" y="1464.21">1</text>
+</g>
+<g clip-path="url(#clip0700)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:end;" transform="rotate(0, 89.7545, 1011.31)" x="89.7545" y="1011.31">2</text>
+</g>
+<g clip-path="url(#clip0700)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:end;" transform="rotate(0, 89.7545, 558.408)" x="89.7545" y="558.408">3</text>
+</g>
+<g clip-path="url(#clip0700)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:end;" transform="rotate(0, 89.7545, 105.505)" x="89.7545" y="105.505">4</text>
+</g>
+<polyline clip-path="url(#clip0702)" style="stroke:#009af9; stroke-width:4; stroke-opacity:1; fill:none" points="
+  177.122,1446.71 2289.39,1446.71 
+  "/>
+<polyline clip-path="url(#clip0702)" style="stroke:#e26f46; stroke-width:4; stroke-opacity:1; fill:none" points="
+  177.122,993.811 2289.39,993.811 
+  "/>
+<polyline clip-path="url(#clip0702)" style="stroke:#3da44d; stroke-width:4; stroke-opacity:1; fill:none" points="
+  177.122,540.908 2289.39,540.908 
+  "/>
+<polyline clip-path="url(#clip0702)" style="stroke:#c271d2; stroke-width:4; stroke-opacity:1; fill:none" points="
+  177.122,88.0053 2289.39,88.0053 
+  "/>
+<path clip-path="url(#clip0700)" d="
+M1989.93 433.164 L2280.76 433.164 L2280.76 130.764 L1989.93 130.764  Z
+  " fill="#ffffff" fill-rule="evenodd" fill-opacity="1"/>
+<polyline clip-path="url(#clip0700)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  1989.93,433.164 2280.76,433.164 2280.76,130.764 1989.93,130.764 1989.93,433.164 
+  "/>
+<polyline clip-path="url(#clip0700)" style="stroke:#009af9; stroke-width:4; stroke-opacity:1; fill:none" points="
+  2013.93,191.244 2157.93,191.244 
+  "/>
+<g clip-path="url(#clip0700)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:start;" transform="rotate(0, 2181.93, 208.744)" x="2181.93" y="208.744">y1</text>
+</g>
+<polyline clip-path="url(#clip0700)" style="stroke:#e26f46; stroke-width:4; stroke-opacity:1; fill:none" points="
+  2013.93,251.724 2157.93,251.724 
+  "/>
+<g clip-path="url(#clip0700)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:start;" transform="rotate(0, 2181.93, 269.224)" x="2181.93" y="269.224">y2</text>
+</g>
+<polyline clip-path="url(#clip0700)" style="stroke:#3da44d; stroke-width:4; stroke-opacity:1; fill:none" points="
+  2013.93,312.204 2157.93,312.204 
+  "/>
+<g clip-path="url(#clip0700)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:start;" transform="rotate(0, 2181.93, 329.704)" x="2181.93" y="329.704">y3</text>
+</g>
+<polyline clip-path="url(#clip0700)" style="stroke:#c271d2; stroke-width:4; stroke-opacity:1; fill:none" points="
+  2013.93,372.684 2157.93,372.684 
+  "/>
+<g clip-path="url(#clip0700)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:start;" transform="rotate(0, 2181.93, 390.184)" x="2181.93" y="390.184">y4</text>
+</g>
+</svg>
+
+</p>
+
+
+<p>
+But you can also force svg (Since it's multiline, :wrap it with <code>:wrap html</code>)
+</p>
+
+<div class="org-src-container">
+<pre class="src src-julia">plot(matrix)
+</pre>
+</div>
+
+<p>
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="600" height="400" viewBox="0 0 2400 1600">
+<defs>
+  <clipPath id="clip1000">
+    <rect x="0" y="0" width="2400" height="1600"/>
+  </clipPath>
+</defs>
+<path clip-path="url(#clip1000)" d="
+M0 1600 L2400 1600 L2400 0 L0 0  Z
+  " fill="#ffffff" fill-rule="evenodd" fill-opacity="1"/>
+<defs>
+  <clipPath id="clip1001">
+    <rect x="480" y="0" width="1681" height="1600"/>
+  </clipPath>
+</defs>
+<path clip-path="url(#clip1000)" d="
+M113.754 1487.47 L2352.76 1487.47 L2352.76 47.2441 L113.754 47.2441  Z
+  " fill="#ffffff" fill-rule="evenodd" fill-opacity="1"/>
+<defs>
+  <clipPath id="clip1002">
+    <rect x="113" y="47" width="2240" height="1441"/>
+  </clipPath>
+</defs>
+<polyline clip-path="url(#clip1002)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  177.122,1487.47 177.122,47.2441 
+  "/>
+<polyline clip-path="url(#clip1002)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  705.189,1487.47 705.189,47.2441 
+  "/>
+<polyline clip-path="url(#clip1002)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  1233.26,1487.47 1233.26,47.2441 
+  "/>
+<polyline clip-path="url(#clip1002)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  1761.32,1487.47 1761.32,47.2441 
+  "/>
+<polyline clip-path="url(#clip1002)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  2289.39,1487.47 2289.39,47.2441 
+  "/>
+<polyline clip-path="url(#clip1002)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  113.754,1446.71 2352.76,1446.71 
+  "/>
+<polyline clip-path="url(#clip1002)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  113.754,993.811 2352.76,993.811 
+  "/>
+<polyline clip-path="url(#clip1002)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  113.754,540.908 2352.76,540.908 
+  "/>
+<polyline clip-path="url(#clip1002)" style="stroke:#000000; stroke-width:2; stroke-opacity:0.1; fill:none" points="
+  113.754,88.0053 2352.76,88.0053 
+  "/>
+<polyline clip-path="url(#clip1000)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  113.754,1487.47 2352.76,1487.47 
+  "/>
+<polyline clip-path="url(#clip1000)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  113.754,1487.47 113.754,47.2441 
+  "/>
+<polyline clip-path="url(#clip1000)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  177.122,1487.47 177.122,1465.87 
+  "/>
+<polyline clip-path="url(#clip1000)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  705.189,1487.47 705.189,1465.87 
+  "/>
+<polyline clip-path="url(#clip1000)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  1233.26,1487.47 1233.26,1465.87 
+  "/>
+<polyline clip-path="url(#clip1000)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  1761.32,1487.47 1761.32,1465.87 
+  "/>
+<polyline clip-path="url(#clip1000)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  2289.39,1487.47 2289.39,1465.87 
+  "/>
+<polyline clip-path="url(#clip1000)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  113.754,1446.71 147.339,1446.71 
+  "/>
+<polyline clip-path="url(#clip1000)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  113.754,993.811 147.339,993.811 
+  "/>
+<polyline clip-path="url(#clip1000)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  113.754,540.908 147.339,540.908 
+  "/>
+<polyline clip-path="url(#clip1000)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  113.754,88.0053 147.339,88.0053 
+  "/>
+<g clip-path="url(#clip1000)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:middle;" transform="rotate(0, 177.122, 1541.47)" x="177.122" y="1541.47">1.00</text>
+</g>
+<g clip-path="url(#clip1000)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:middle;" transform="rotate(0, 705.189, 1541.47)" x="705.189" y="1541.47">1.25</text>
+</g>
+<g clip-path="url(#clip1000)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:middle;" transform="rotate(0, 1233.26, 1541.47)" x="1233.26" y="1541.47">1.50</text>
+</g>
+<g clip-path="url(#clip1000)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:middle;" transform="rotate(0, 1761.32, 1541.47)" x="1761.32" y="1541.47">1.75</text>
+</g>
+<g clip-path="url(#clip1000)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:middle;" transform="rotate(0, 2289.39, 1541.47)" x="2289.39" y="1541.47">2.00</text>
+</g>
+<g clip-path="url(#clip1000)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:end;" transform="rotate(0, 89.7545, 1464.21)" x="89.7545" y="1464.21">1</text>
+</g>
+<g clip-path="url(#clip1000)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:end;" transform="rotate(0, 89.7545, 1011.31)" x="89.7545" y="1011.31">2</text>
+</g>
+<g clip-path="url(#clip1000)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:end;" transform="rotate(0, 89.7545, 558.408)" x="89.7545" y="558.408">3</text>
+</g>
+<g clip-path="url(#clip1000)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:end;" transform="rotate(0, 89.7545, 105.505)" x="89.7545" y="105.505">4</text>
+</g>
+<polyline clip-path="url(#clip1002)" style="stroke:#009af9; stroke-width:4; stroke-opacity:1; fill:none" points="
+  177.122,1446.71 2289.39,1446.71 
+  "/>
+<polyline clip-path="url(#clip1002)" style="stroke:#e26f46; stroke-width:4; stroke-opacity:1; fill:none" points="
+  177.122,993.811 2289.39,993.811 
+  "/>
+<polyline clip-path="url(#clip1002)" style="stroke:#3da44d; stroke-width:4; stroke-opacity:1; fill:none" points="
+  177.122,540.908 2289.39,540.908 
+  "/>
+<polyline clip-path="url(#clip1002)" style="stroke:#c271d2; stroke-width:4; stroke-opacity:1; fill:none" points="
+  177.122,88.0053 2289.39,88.0053 
+  "/>
+<path clip-path="url(#clip1000)" d="
+M1989.93 433.164 L2280.76 433.164 L2280.76 130.764 L1989.93 130.764  Z
+  " fill="#ffffff" fill-rule="evenodd" fill-opacity="1"/>
+<polyline clip-path="url(#clip1000)" style="stroke:#000000; stroke-width:4; stroke-opacity:1; fill:none" points="
+  1989.93,433.164 2280.76,433.164 2280.76,130.764 1989.93,130.764 1989.93,433.164 
+  "/>
+<polyline clip-path="url(#clip1000)" style="stroke:#009af9; stroke-width:4; stroke-opacity:1; fill:none" points="
+  2013.93,191.244 2157.93,191.244 
+  "/>
+<g clip-path="url(#clip1000)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:start;" transform="rotate(0, 2181.93, 208.744)" x="2181.93" y="208.744">y1</text>
+</g>
+<polyline clip-path="url(#clip1000)" style="stroke:#e26f46; stroke-width:4; stroke-opacity:1; fill:none" points="
+  2013.93,251.724 2157.93,251.724 
+  "/>
+<g clip-path="url(#clip1000)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:start;" transform="rotate(0, 2181.93, 269.224)" x="2181.93" y="269.224">y2</text>
+</g>
+<polyline clip-path="url(#clip1000)" style="stroke:#3da44d; stroke-width:4; stroke-opacity:1; fill:none" points="
+  2013.93,312.204 2157.93,312.204 
+  "/>
+<g clip-path="url(#clip1000)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:start;" transform="rotate(0, 2181.93, 329.704)" x="2181.93" y="329.704">y3</text>
+</g>
+<polyline clip-path="url(#clip1000)" style="stroke:#c271d2; stroke-width:4; stroke-opacity:1; fill:none" points="
+  2013.93,372.684 2157.93,372.684 
+  "/>
+<g clip-path="url(#clip1000)">
+<text style="fill:#000000; fill-opacity:1; font-family:Arial,Helvetica Neue,Helvetica,sans-serif; font-size:48px; text-anchor:start;" transform="rotate(0, 2181.93, 390.184)" x="2181.93" y="390.184">y4</text>
+</g>
+</svg>
+
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgde8118c" class="outline-2">
+<h2 id="orgde8118c"><span class="section-number-2">4</span> Issues and Missing features</h2>
+<div class="outline-text-2" id="text-4">
+<ul class="org-ul">
+<li>No automated tests yet</li>
+<li>Not tested with remote host</li>
+<li>Variable resolution of src-block is synchronous. If your :async src
+block depends on another :async src block, the latter is evaluated
+synchronously, then former asynchonously. This could be implemented
+by using a simple queue, where next item is started in the
+process-filter and where variables starting with julia-async: are
+replaced. Right now I don't feel the need (if results are cached,
+things already feels good).</li>
+<li>For async evaluation to work the session must be started from
+ob-julia (or you must register the filter function manually,
+undocumented).</li>
+<li><code>:results output</code> is implemented but untested. I rarely find it
+useful.</li>
+<li>import/using errors are not reported</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgcbcfb68" class="outline-2">
+<h2 id="orgcbcfb68"><span class="section-number-2">5</span> Credits</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+This project originally started as a fork of
+<a href="https://github.com/astahlman/ob-async/">astahlman/ob-async</a>. However, because of changes in new version of Org
+Mode, julia 1.0 release and unsupported features, I decided to start
+over.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Nicolò Balzarotti</p>
+<p class="date">Created: 2019-10-29 Tue 11:56</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

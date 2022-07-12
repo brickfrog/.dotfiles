@@ -1,0 +1,562 @@
+#+title: ob-julia: high quality julia org-mode support
+#+author: Nicolò Balzarotti
+#+property: header-args:julia :exports both
+#+html_head: <style>pre.src-julia:before { content: 'julia'; }</style>
+
+* ob-julia
+
+See [[Implemented features]] for more details.
+
+* How it works
+
+1. Code block is saved to a temporary file (under /tmp)
+2. Decide whether we need to start a new julia process or not
+   1. If session is "none", don't use a session (code under /tmp will
+      be passed to =julia -L initfile src-block.jl=). This does not
+      require ess. The command is customized by
+      =org-babel-julia-command=)
+   2. If session is nil, use default session name
+      (customized by =org-babel-julia-default-session=)
+   3. If session has a values, use it's name
+3. Check if we want to use a session or not. Check if the session
+   exists. Start the session accordingly. During startup, the file
+   defined in =ob-julia-startup-script= is loaded. This file must define
+   functions like OrgBabelFormat, to let emacs send code to
+   execute. See =init.jl= for details.
+4. Is the evaluation async?
+   1. YES:
+      1. Register a filter function
+      2. Return immediately, printing a ref to the evaluation.  
+         The ref is in the form: =julia-async:$uuid:$tmpfile=
+         - uuid: identifier of this evaluation, used to find out where to
+           insert again results
+         - tmpfile: the path where the output will be saved. This is
+           useful both for debugging purposes and so that we do not need
+           to store an object that maps computations to files. The
+           process-filter look for the uuid, and then inserts =$tmpfile=.
+   2. NO: Run the code, wait for the results. Insert the results.
+
+* Implemented features
+
+** Session (=:session none=, =:session=, =:session session-name=)
+
+By default code is executed without a session. The advantage is that
+you do not requires =emacs-ess= to run julia code with ob-julia. But
+sessions (especially for julia, where speed comes from compiled code)
+are available. The same behaviour is obtained by setting the =:session=
+header to =none=.
+
+You can enable sessions with the =:session= argument. Without
+parameters, the session used is named after
+=org-babel-julia-default-session= (=*julia*= by default). With a
+parameter, the name is earmuffed (a star is prepended and appended).
+
+The REPL is kept sane. There's no cluttering (you don't see all the
+code executed that is required by ob-julia to have results), history
+is preserved (you can ~C-S-up~ to see the list of org-src block
+evaluated), and results are shown (this can be customized by
+=org-babel-julia-silent-repl=).
+
+** Async (=:async= =:async yes=, =:async t=)
+
+Async works both with and without =:session=.
+
+The best combination of features is combining session with
+=:async=. Async allows code evaluation in background (you can continue
+using emacs while julia compute results). 
+
+You can change buffer or even narrow it while the evaluation
+completes: the result is added automatically as soon as julia
+finishes. Multiple evaluation are queued automatically (thanks to
+ess). Cache is supported (evaluating the same code-block twice does
+not re-trigger evaluation, even if the code is still running).
+
+It's not possible to have async blocks with =:results silent=. I'm
+currently using this to distinguish between active src block and
+variable resolution (when a =:var= refer to an async block, the block
+cannot be executed asynchonously. So we need to distinguish between
+the two. This is the only way I was able to find, if you know better
+please tell me).
+
+#+begin_src julia :session :async t
+sleep(1)
+"It works!"
+#+end_src
+
+#+begin_src julia :session :async yes :cache yes
+sleep(1)
+"It works!"
+#+end_src
+
+Here the same, without the session
+#+begin_src julia :async 
+sleep(1)
+"It works!"
+#+end_src
+
+#+begin_src julia :async :session
+sleep(1)
+"It works!"
+#+end_src
+
+
+Asynchronous evaluation is automatically disabled on export, or when a
+code block depends on one (=:var=)
+
+** Variables input (=:var =:let=), Standard output
+
+As usual, you can set variables with the =:var= header. To make ob-julia
+behave like the julia REPL, variables are set in the global scope. If
+you want a block to be isolated, you can use the extra =:let= header
+argument: with this, the src block is inside a let block:
+
+#+begin_src julia :exports code :eval never
+let vars
+  src_block
+end
+#+end_src
+
+*** Inputs
+
+Those are example inputs that will be used later, to check whether
+import+export pipeline works as expected.
+
+A table
+
+#+name: table
+| a | b |
+|---+---|
+| 1 | 1 |
+| 2 | 2 |
+|   |   |
+| 4 | 4 |
+
+A matrix (no hline)
+
+#+name: matrix
+| 1 | 2 | 3 | 4 |
+| 1 | 2 | 3 | 4 |
+
+A column
+
+#+name: column
+| 1 |
+| 2 |
+| 3 |
+| 4 |
+
+A row
+
+#+name: row
+| 1 | 2 | 3 | 4 |
+
+A list
+
+#+name: list
+- 1
+- 2
+- 3
+- 4
+
+**** Table
+
+#+begin_src julia :session *julia-test-variables* :var table=table
+table
+#+end_src
+
+As you can see, the table automatically adds the hline after the
+header. This is a heuristic that might fail (might be triggered for
+matrix, might not trigger on tables), so you can manually
+force/disable it with the =:results table= or =:results matrix= param.
+
+#+begin_src julia :session *julia-test-variables* :var table=table :async :results matrix
+table
+#+end_src
+
+**** Row
+
+Column, Rows, and Matrix export works just fine (tests in session sync, session async
+and without session).
+
+#+name: sync-row
+#+begin_src julia :session *julia-test-variables* :var row=row
+row
+#+end_src
+
+#+name: async-row
+#+begin_src julia :session *julia-test-variables* :var row=row :async
+row
+#+end_src
+
+#+name: no-session-row
+#+begin_src julia :var row=row :async
+row
+#+end_src
+
+**** Column
+
+Works both with synchronous evaluation
+
+#+name: sync-column
+#+begin_src julia :session *julia-test-variables* :var column=column
+column
+#+end_src
+
+asynchronous evaluation
+
+#+name: async-column
+#+begin_src julia :session *julia-test-variables* :var column=column :async
+column
+#+end_src
+
+and without a session
+
+#+name: no-session-column
+#+begin_src julia :var column=column
+column
+#+end_src
+
+**** Matrix
+
+Sync
+
+#+name: sync-matrix
+#+begin_src julia :session *julia-test-variables* :var matrix=matrix
+matrix
+#+end_src
+
+Just like for tables, you can control header hline line with the
+results param.
+
+#+begin_src julia :session *julia-test-variables* :var matrix=matrix :results table
+matrix
+#+end_src
+
+Async
+
+#+name: async-matrix
+#+begin_src julia :session *julia-test-variables* :var matrix=matrix :async
+matrix
+#+end_src
+
+No session
+
+#+name: no-session-matrix
+#+begin_src julia :var matrix=matrix :results table :async
+matrix
+#+end_src
+
+**** List
+
+List are parsed as columns
+
+#+begin_src emacs-lisp :var list=list
+list
+#+end_src
+
+=:results list= return the list (just like R). It's not perfect with
+#+begin_src julia :var list=list :async :results list
+list
+#+end_src
+
+**** Table
+
+There are two ways in which tables can be passed to Julia:
+- Array{NamedTuple}
+- Dictionary
+
+I like the NamedTuple approach, but if you don't like it you can
+customize the variable =org-babel-julia-table-as-dict=. In both cases,
+if you [[id:5a0042fc-1cf2-4f11-823f-658e30776931][:import]] DataFrames, you can construct a DataFrame from both.
+
+TOOD: I miss the julia code for printing Array{NamedTuple}.
+
+#+begin_src julia :var table=table :async :session last
+table
+#+end_src
+
+Also, it's nice that a single NamedTuple can represent a table:
+#+begin_src julia :var table=table :async :session last
+table[2]
+#+end_src
+
+** Directory (=:dir=)
+
+Each source block is evaluated in it's :dir param
+
+#+begin_src julia :session *julia-test-change-dir* :dir "/tmp"
+pwd()
+#+end_src
+
+#+begin_src julia :session *julia-test-change-dir* :dir "/"
+pwd()
+#+end_src
+
+If unspecified, the directory is session's one
+#+begin_src julia :session *julia-test-change-dir*
+pwd()
+#+end_src
+
+Changing dir from julia code still works
+#+begin_src julia :session *julia-test-change-dir*
+cd("/")
+realpath(".")
+#+end_src
+
+but is ephemeral (like fort the =:dir= param)
+#+begin_src julia :session *julia-test-change-dir*
+realpath(".")
+#+end_src
+
+This is obtained by wrapping the src block in a =cd()= call:
+#+begin_src julia :eval never :exports code
+cd(folder) do
+   block
+end
+#+end_src
+
+** Error management
+
+If the block errors out, 
+
+#+name: undef-variable
+#+begin_src julia :session julia-error-handling
+x
+#+end_src
+
+#+name: method-error
+#+begin_src julia :session julia-error-handling
+1 + "ciao"
+#+end_src
+
+It works in async
+#+begin_src julia :session julia-error-handling :async
+x
+#+end_src
+
+On external process (sync)
+#+begin_src julia :async
+x
+#+end_src
+
+and on external process (async)
+#+begin_src julia :async
+x
+#+end_src
+
+Error management can still be improved for helping with debug (see
+scimax).
+
+** Using (=:using=) and Import (=:import=)
+:PROPERTIES:
+:ID:       5a0042fc-1cf2-4f11-823f-658e30776931
+:END:
+
+To include dependencies, you can use =:using= and =:import=.
+
+Because of how the julia code is actually implemented, in order to use
+specialized exports (e.g., DataFrames, see ) you need the
+modules to be available _before_ the block gets evaluated. The problem
+can be solved in 2 (or 3 ways):
+- Evaluating a block with using/import, then the other block
+- Using the header arguments
+- Fixing the Julia code :D
+
+to use =:import=, you need to pass arguments quoted:
+#+begin_example
+:using DataFrames Query :import "FileIO: load" "Plots: plot"
+#+end_example
+
+** Results (=:results output=, =:results file=, )
+
+The default is to return the value:
+
+#+begin_src julia :async :results value :session julia-results
+10
+#+end_src
+
+If results is output, it's included the stdout (what's printed in the
+terminal). (This part still needs some work to be useful.)
+
+#+begin_src julia :async :results output :session julia-results
+10
+#+end_src
+
+#+begin_src julia :async :results output :session julia-results
+println(10)
+#+end_src
+
+#+begin_src julia :async :results output :session julia-results
+println("a")
+
+"10"
+
+println("b")
+#+end_src
+
+Error (results output)
+
+#+begin_src julia :session error-output :results output
+This will throw an error
+#+end_src
+
+Another error (result ouptut)
+#+begin_src julia :session error-output :results output
+print(one(3,3))
+#+end_src
+
+A matrix
+#+begin_src julia :session :results output
+print(ones(3,3))
+#+end_src
+
+** Supported Types
+:PROPERTIES:
+:ID:       99d2531c-9810-4069-94a3-ac8bca9f6c23
+:END:
+
+Adding new types is easy (you need to define an =orgshow()= function for
+your type. See [[file+emacs:init.jl::orgshow][init.jl]]). There's a simple mechanism that allows to
+define method on non-yet-existing types [[file+emacs:init.jl::function%20define_][example]].
+
+The current version supports a couple of useful type: DataFrames and
+Plots. ob-julia needs community support to add more types: please help!
+
+** File output & Inlining
+
+There's native support for writing output to file. For unkown file
+types, instead of inserting the output in the buffer it's written to the file.
+
+#+begin_src julia :session :file readme/output.html
+zeros(3,3)
+#+end_src
+
+#+begin_src julia :session :file readme/output.csv :async
+zeros(3,3)
+#+end_src
+
+#+begin_src julia :session :file readme/output_dict.csv :async
+sleep(1)
+Dict(10 => 10)
+#+end_src
+
+Saving plots requires the Plots library. You can require it with the
+=:using= [[id:5a0042fc-1cf2-4f11-823f-658e30776931][header]]. There's the custom =:size "tuple"= header argument for
+specifying the output size. It _must_ be placed inside parentheses, and
+it's evaluated as julia object (that means it can contains variables
+and expressions).
+
+#+begin_src julia :session :file readme/output-plot.png :async :using Plots :var matrix=matrix :size "let unit = 200; (unit, 2unit); end"
+plot(matrix)
+#+end_src
+
+Matrix also has an automatic conversion (when Plots is loaded), so you
+don't even need to pass it to the =plot()= function (there's a generic
+fallback that tries to plot anything saved to png or svg).
+
+#+begin_src julia :session :file readme/output-matrix.svg :async :using Plots :var matrix=matrix
+matrix
+#+end_src
+
+Plots can also manage errors (in a visually-disturbing way).
+
+#+begin_src julia :session :file readme/output-undef.svg :using Plots
+this_is_undefined
+#+end_src
+
+#+begin_src julia :session :file readme/output-undef.png :using Plots :async
+another_undefined_but_async
+#+end_src
+
+#+name: dataframe
+#+begin_src julia :session :using DataFrames :async
+DataFrame(x = 1:10, y = (0:9) .+ 'a')
+#+end_src
+
+#+begin_src julia :session :async :using DataFrames :var data=dataframe table=table :file readme/output-table.csv
+DataFrame(table)
+#+end_src
+
+#+begin_src julia :session :async :using DataFrames :var data=dataframe
+data
+#+end_src
+
+*** Inlining (=:inline no=, =:inline=, =:inline format=)
+Output to file and Inlining are different things but nicely fit
+together to solve the same problem: inserting images or other objects
+inside the buffer.
+
+If your type can be represented inside the exported format (like
+images as svg/base-64 encoded pngs inside =.html=, tex plots in a =.tex=
+file), the =:inline= header is what you need. The behaviour changes
+based depending on your interactive use and on the desired output
+format.
+
+TODO: right now :results raw is required on export. How do we fix it?
+
+Examples: :inline keyword alone, in interactive evaluation, the output
+inserted in the buffer is the usual.
+#+begin_src julia :session :inline :async :var matrix=matrix :results raw
+matrix
+#+end_src
+
+But when you export the output to html, the output will be processed
+_by julia_, and inserted in the buffer (or a different representation
+for different export formats).  This is not of much use with tables
+(even if you can customize the export, e.g. by passing the :width
+keyword), but is wonderful for pictures. If a result can be inserted
+in multiple ways (picture in html can be both inline png or svg), you
+can specify the desired format by passing the argument to the :inline
+keyword (like =:inline svg=). In this case, the processed output is
+inserted also in interactive sessions.
+
+# Here we should fix the way we escape the params
+#+begin_src julia :session :inline html :async :var matrix=matrix :results raw :width 10
+matrix
+#+end_src
+
+Plots default to inline png
+
+#+begin_src julia :session :inline :var matrix=matrix :using Plots :async :results raw
+plot(matrix)
+#+end_src
+
+But you can also force svg (Since it's multiline, :wrap it with =:wrap html=)
+
+#+begin_src julia :session :inline svg :results raw :async
+plot(matrix)
+#+end_src
+
+#+begin_src julia :file deleteme.csv :async
+sleep(10)
+rand(100,100)
+#+end_src
+
+#+RESULTS:
+[[file:deleteme.csv]]
+
+* Issues and Missing features
+
+- No automated tests yet
+- Not tested with remote host
+- Variable resolution of src-block is synchronous. If your :async src
+  block depends on another :async src block, the latter is evaluated
+  synchronously, then former asynchonously. This could be implemented
+  by using a simple queue, where next item is started in the
+  process-filter and where variables starting with julia-async: are
+  replaced. Right now I don't feel the need (if results are cached,
+  things already feels good).
+- For async evaluation to work the session must be started from
+  ob-julia (or you must register the filter function manually,
+  undocumented).
+- =:results output= is implemented but untested. I rarely find it
+  useful.
+- import/using errors are not reported
+
+* Credits
+
+This project originally started as a fork of
+[[https://github.com/astahlman/ob-async/][astahlman/ob-async]]. However, because of changes in new version of Org
+Mode, julia 1.0 release and unsupported features, I decided to start
+over.
+

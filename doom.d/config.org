@@ -337,8 +337,8 @@ ophints                      ; highlight the region an operation acts on
 (popup                       ; tame sudden yet inevitable temporary windows
  +all                        ; catch all popups that start with an asterix
  +defaults)                  ; default popup rules
-(tabs                        ; an tab bar for Emacs
-  +centaur-tabs)             ; ... with prettier tabs
+;;(tabs                      ; an tab bar for Emacs
+;;  +centaur-tabs)           ; ... with prettier tabs
 treemacs                     ; a project drawer, like neotree but cooler
 ;;unicode                    ; extended unicode support for various languages
 vc-gutter                    ; vcs diff in the fringe
@@ -596,8 +596,14 @@ listing the missing fonts should appear for at least half a second.
 
 **** Theme and modeline
 
-~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer. Oh, and with the
-nice selection doom provides there's no reason for me to want the defaults.
+I wrote a simple function that looks up what wallpaper was chosen by ~wal~, then
+takes the first word to assign a theme. Normally I'd just use the Xresources
+theme directly, but with the amount of customization, I think I'd  need to edit
+it more.
+
+This allows me to pick a specific doom-theme matching with the loaded
+wallpaper, as I name them similarly, e.g. a pink wallpaper would be
+~pink-blah-blah.png~, otherwise it just sticks with ~doom-vibrant~.
 
 #+begin_src emacs-lisp
 (add-to-list 'custom-theme-load-path "~/.doom.d/themes/")
@@ -611,7 +617,7 @@ nice selection doom provides there's no reason for me to want the defaults.
   ((string= theme-name "cyberpunk") (setq doom-theme 'doom-tokyo-night))
   ((string= theme-name "synthwave") (setq doom-theme 'doom-laserwave))
   ((string= theme-name "orange") (setq doom-theme 'doom-old-hope))
-  ((string= theme-name "pink") (setq doom-theme 'doom-vibrant))
+  ((string= theme-name "pink") (setq doom-theme 'doom-laserwave))
   ((string= theme-name "white") (setq doom-theme 'doom-homage-black))
   (t (setq doom-theme 'doom-vibrant)))
 
@@ -1519,32 +1525,36 @@ use them as a data scientist, I figure, can't hurt.
   (setq conda-env-home-directory (expand-file-name "~/anaconda3")))
 #+end_src
 
-*** Very large files
-TODO: I wasn't able to get these working. Seemed broking when I initially moved
-the config.
-
-The /very large files/ mode loads large files in chunks, allowing one to open
-ridiculously large files  TODO: this topped working, figure out in future..
-#+begin_src emacs-lisp :tangle packages.el
-;;(package! vlf :recipe (:host github :repo "m00natic/vlfi" :files ("*.el"))
-;;  :pin "cc02f2533782d6b9b628cec7e2dcf25b2d05a27c" :disable t)
-#+end_src
-
-To make VLF available without delaying startup, we'll just load it in quiet moments.
-#+begin_src emacs-lisp
-;;(use-package! vlf-setup
-;;  :defer-incrementally vlf-tune vlf-base vlf-write vlf-search vlf-occur vlf-follow vlf-ediff vlf)
-#+end_src
-
 *** Deft
 
 This might require some config, but I'm not entirely sure how useful this is
 considering node-find for roam works. Overlapping / maybe use for org in general.
 #+begin_src emacs-lisp
-(setq deft-directory "~/.org/"
-     deft-extensions '("org" "txt" "md")
-     deft-recursive t
-     deft-use-filter-string-for-filename t)
+(use-package deft
+:commands (deft)
+:config
+  (setq deft-directory "~/.org/")
+  (setq deft-recursive t)
+  (setq deft-strip-summary-regexp
+  (concat "\\("
+	  "^:.+:.*" ; any line with a :SOMETHING:
+	  "\\|^#\\+.*\n" ; anyline starting with a #+
+	  "\\|^\\*.+.*\n" ; anyline where an asterisk starts the line
+	  "\\)"))
+     )
+
+(advice-add 'deft-parse-title :override
+    (lambda (file contents)
+      (if deft-use-filename-as-title
+	  (deft-base-filename file)
+	(let* ((case-fold-search 't)
+	       (begin (string-match "title: " contents))
+	       (end-of-begin (match-end 0))
+	       (end (string-match "\n" contents begin)))
+	  (if begin
+	      (substring contents end-of-begin end)
+	    (format "%s" file))))))
+
 #+end_src
 
 *** Eros
@@ -1945,7 +1955,6 @@ From the =:core packages= module.
 #+end_src
 
 ** Visuals
-
 *** Info colours
 
 This makes manual pages nicer to look at by adding variable pitch fontification
@@ -1977,7 +1986,7 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "810a035768085167440c07f99bd7b64e6894d1b7")
+(package! modus-themes :pin "5d35fed1ab7d2d59f64b2c5dcf77c05e64a0322e")
 #+end_src
 
 *** Theme magic
@@ -2343,38 +2352,6 @@ shadow)=, but I don't like that.
                     (doom-blend 'red 'orange (- size-index 1)))))
       (propertize (file-size-human-readable size) 'face (list :foreground color)))))
 #+end_src
-*** Centaur tabs
-
-#+begin_quote
-From the =:ui tabs= module.
-#+end_quote
-
-
-We want to make the tabs a nice, comfy size (~36~), with icons. The modifier
-marker is nice, but the particular default Unicode one causes a lag spike, so
-let's just switch to an ~o~, which still looks decent but doesn't cause any
-issues.
-An 'active-bar' is nice, so let's have one of those. If we have it ~under~ needs us to
-turn on ~x-underline-at-decent~ though. For some reason this didn't seem to work
-inside the src_elisp{(after! ... )} block ¯\_(ツ)_/¯.
-Then let's change the font to a sans serif, but the default one doesn't fit too
-well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
-#+begin_src emacs-lisp
-(after! centaur-tabs
-  (centaur-tabs-group-by-projectile-project)
-  (centaur-tabs-mode -1)
-  (setq centaur-tabs-height 28
-        centaur-tabs-set-icons t
-        centaur-tabs-modified-marker "o"
-        centaur-tabs-close-button "×"
-        centaur-tabs-set-bar 'above
-        centaur-tabs-gray-out-icons 'buffer)
-  (centaur-tabs-change-fonts "P22 Underground Book" 160))
-;; (setq x-underline-at-descent-line t)
-
-
-#+end_src
-
 *** All the icons
 
 #+begin_quote
@@ -2547,20 +2524,6 @@ Now, we just identify the files in question.
         "*/_region_.tex"))
 #+end_src
 ** Frivolities
-
-*** Selectric
-
-Every so often, you want everyone else to /know/ that you're typing, or just to
-amuse oneself. Introducing: typewriter sounds!
-#+begin_src emacs-lisp :tangle packages.el
-(package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa")
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! selectic-mode
-  :commands selectic-mode)
-#+end_src
-
 *** Wttrin
 
 Hey, let's get the weather in here while we're at it.
@@ -2574,42 +2537,6 @@ roll our [[file:lisp/wttrin/wttrin.el][own version]].
 (use-package! wttrin
   :commands wttrin)
 #+end_src
-*** Spray
-
-Why not flash words on the screen. Why not --- hey, it could be fun.
-#+begin_src emacs-lisp :tangle packages.el
-(package! spray :pin "74d9dcfa2e8b38f96a43de9ab0eb13364300cb46")
-#+end_src
-
-It would be nice if Spray's default speed suited me better, and the keybindings
-worked in evil mode. Let's do that and make the display slightly nicer while
-we're at it.
-
-#+begin_src emacs-lisp
-(use-package! spray
-  :commands spray-mode
-  :config
-  (setq spray-wpm 600
-        spray-height 800)
-  (defun spray-mode-hide-cursor ()
-    "Hide or unhide the cursor as is appropriate."
-    (if spray-mode
-        (setq-local spray--last-evil-cursor-state evil-normal-state-cursor
-                    evil-normal-state-cursor '(nil))
-      (setq-local evil-normal-state-cursor spray--last-evil-cursor-state)))
-  (add-hook 'spray-mode-hook #'spray-mode-hide-cursor)
-  (map! :map spray-mode-map
-        "<return>" #'spray-start/stop
-        "f" #'spray-faster
-        "s" #'spray-slower
-        "t" #'spray-time
-        "<right>" #'spray-forward-word
-        "h" #'spray-forward-word
-        "<left>" #'spray-backward-word
-        "l" #'spray-backward-word
-        "q" #'spray-quit))
-#+end_src
-
 *** Elcord
 
 What's even the point of using Emacs unless you're constantly telling everyone
@@ -2626,7 +2553,6 @@ about it?
 #+end_src
 
 ** File types
-
 *** Authinfo
 
 My patch giving my patch giving =authinfo-mode= syntax highlighting is only
@@ -2662,7 +2588,7 @@ For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
 #+begin_src emacs-lisp :tangle packages.el
-(package! calibredb :pin "232fa1cf3af08200af439d1cbb5a131f38286183")
+(package! calibredb :pin "2f2cfc38f2d1c705134b692127c3008ac1382482")
 #+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
@@ -3292,9 +3218,10 @@ on that.
 #+begin_src emacs-lisp :tangle (if (>= emacs-major-version 28) "yes" "no")
 (after! text-mode
   (add-hook! 'text-mode-hook
-             ;; Apply ANSI color codes
-             (with-silent-modifications
-               (ansi-color-apply-on-region (point-min) (point-max) t))))
+    (unless (derived-mode-p 'org-mode)
+      ;; Apply ANSI color codes
+      (with-silent-modifications
+        (ansi-color-apply-on-region (point-min) (point-max) t)))))
 #+end_src
 
 ** Org
@@ -3403,7 +3330,7 @@ correct package statement needed.
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el"))
-  :pin "15b03d5090cd6ef46bdfdd14a3f9e20c3dab60da")
+  :pin "c6aef31ccfc7c4418c3b51e98f7c3bd8e255f5e6")
 #+end_src
 
 **** Visuals
@@ -3412,7 +3339,7 @@ correct package statement needed.
 Fontifying =org-mode= buffers to be as pretty as possible is of paramount importance,
 and Minad's lovely =org-modern= goes a long way in this regard.
 #+begin_src emacs-lisp
-(package! org-modern :pin "b352680d9ee8c6e6966cc21d595513c3595e3bb7")
+(package! org-modern :pin "cef71f81e6a1b66795e70a209121841c98335f82")
 #+end_src
 
 ...with a touch of configuration...
@@ -3494,7 +3421,7 @@ occur at the border a bit more fiddley. We can improve this situation without
 sacrificing visual amenities with the =org-appear= package.
 #+begin_src emacs-lisp
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "8dd1e564153d8007ebc4bb4e14250bde84e26a34")
+  :pin "60ba267c5da336e75e603f8c7ab3f44e6f4e4dac")
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -3524,10 +3451,12 @@ recognising the pgtk window system]].
 (use-package! org-ol-tree
   :commands org-ol-tree
   :config
-  (defadvice! org-ol-tree-system--graphical-frame-p--pgtk ()
-    :override #'org-ol-tree-system--graphical-frame-p
-    (memq window-system '(pgtk x w32 ns))))
-
+(setq org-ol-tree-ui-icon-set
+        (if (and (display-graphic-p)
+                 (fboundp 'all-the-icons-material))
+            'all-the-icons
+          'unicode))
+  (org-ol-tree-ui--update-icon-set))
 (map! :map org-mode-map
       :after org
       :localleader
@@ -3538,22 +3467,15 @@ recognising the pgtk window system]].
 ***** Julia support
 
 =ob-julia= is currently a bit borked, but there's an effort to improve this.
-#+begin_src emacs-lisp
-(package! ob-julia :recipe (:local-repo "lisp/ob-julia" :files ("*.el" "julia")))
+Additionally, =ox-pluto= allows working with org files within Julia.
+#+begin_src emacs-lisp :tangle packages.el
+(package! ob-julia :recipe (:local-repo "lisp/ob-julia" :files ("*.el")))
+(package! ox-pluto :recipe (:host github :repo "tecosaur/ox-pluto"))
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
 (use-package! ob-julia
-  :commands org-babel-execute:julia
-  :config
-  (setq org-babel-julia-command-arguments
-        `("--sysimage"
-          ,(when-let ((img "~/.local/lib/julia.so")
-                      (exists? (file-exists-p img)))
-             (expand-file-name img))
-          "--threads"
-          ,(number-to-string (- (doom-system-cpus) 2))
-          "--banner=no")))
+  :commands org-babel-execute:julia)
 #+end_src
 ***** HTTP requests
 
@@ -3572,7 +3494,7 @@ I like the idea of being able to make HTTP requests with Babel.
 There's a really cool package in development to /transclude/ Org document content.
 #+begin_src emacs-lisp
 (package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion")
-  :pin "ccc0aaa72732ea633bf52bcc8a0345cd3ac178fd")
+  :pin "5cb94542e18722bf72a281441e944a8039b5301f")
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -3583,6 +3505,7 @@ There's a really cool package in development to /transclude/ Org document conten
         "<f12>" #'org-transclusion-mode))
 #+end_src
 ***** Restore pdf views
+
 #+begin_src emacs-lisp
 (package! pdf-view-restore)
 #+end_src
@@ -3819,8 +3742,8 @@ There's also the new =org-cite= though. It would be nice to try that out.
 To improve =org-cite=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! citar :pin "d55cac7a2b8b848990ebd713de8667bf3fe93c6b")
-(package! citeproc :pin "ba49516265fa24b138346c4918d39d19b4de8a62")
+(package! citar :pin "b6cd49ffb56824b8d1793b0c4268237b3d89fb45")
+(package! citeproc :pin "65e1c52486d788b9b0d4baba63645453b4abcfca")
 (package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "4fdb61c0f83b5d6db0d07dfd64d2a177fd46e931")
 #+end_src
 
@@ -4148,7 +4071,7 @@ set up org-capture.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "4033a8fd8681d3989550f7a2532d6b4e3c45bfe8")
+  :pin "8464809754f3316d5a2fdcf3c01ce1e8736b323b")
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
@@ -4618,6 +4541,7 @@ with it.
     (browse-url-xdg-open (format "http://localhost:%d" org-roam-ui-port))))
 #+end_src
 **** Noter
+
 Config for ~org-noter~, I use a similar structure to Jethro Kuan's notes, and like
 to set up my org notes for org-noter to match the folders. 
 #+begin_src emacs-lisp
@@ -4641,10 +4565,7 @@ Jethro Kuan's function for parsing references.
       (org-roam-capture- :templates
                          '(("r" "reference" plain "%?" :if-new
                             (file+head "reference/${citekey}.org"
-                                       ":PROPERTIES:
-:ROAM_REFS: [cite:@${citekey}]
-:END:
-,#+title: ${title}\n#+created: %U\n#+last_modified: %U\n")
+":PROPERTIES:\n:ROAM_REFS: [cite:@${citekey}]\n:END:\n#+title: ${title}\n#+created: %U\n#+last_modified: %U\n")
                             :immediate-finish t
                             :unnarrowed t))
                          :info (list :citekey (car keys-entries))
@@ -5118,8 +5039,6 @@ It likely misses some edge cases, but should mostly work.
       (message "Replaced %d occurances" count))))
 #+end_src
 **** Extra links
-
-***** Music
 
 ***** YouTube
 
@@ -8748,19 +8667,33 @@ In case of Emacs28,
 #+begin_src emacs-lisp
 ; Gets rid of the annoying garbage collection messages - not specific to Python, but still
 (setq-default garbage-collection-messages nil)
+                                                    #+end_src
+** Jupyter
 
-; This is a edit specifically for Jupyter
+#+begin_src emacs-lisp
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (julia . t)
+   (python . t)
+   (jupyter . t)))
+
 (setq ob-async-no-async-languages-alist '("jupyter-python" "jupyter-julia"))
 (setq org-babel-default-header-args:jupyter-python '((:async . "yes")
                                                      (:session . "py")
                                                      (:kernel . "base")))
+
+(setq org-babel-default-header-args:jupyter-julia '((:async . "yes")
+                                                    (:session . "jl")
+                                                    (:kernel . "julia-1.7.3")))
 
 (defun previous-org-jupyter-kernel ()
   (save-excursion
    (if (re-search-backward " :kernel \\(\\w+\\)" nil t)
        (substring-no-properties (match-string 1))
      "base")))
-                                                    #+end_src
+#+end_src
 
 ** PDF
 *** MuPDF
@@ -8822,6 +8755,7 @@ Julia server. The pseudo-fix is rather simple at least
                 lsp-folding-range-limit 100)))
 #+end_src
 ** Graphviz
+
 Graphviz is a nice method of visualising simple graphs, based on plaintext
 =.dot= / =.gv= files.
 #+begin_src emacs-lisp :tangle packages.el
@@ -8863,39 +8797,4 @@ sixth greyed out. Since the sixth level is so small, I'll turn up the boldness a
   '(markdown-header-face-4 :height 1.00 :weight bold       :inherit markdown-header-face)
   '(markdown-header-face-5 :height 0.90 :weight bold       :inherit markdown-header-face)
   '(markdown-header-face-6 :height 0.75 :weight extra-bold :inherit markdown-header-face))
-#+end_src
-** Beancount
-
-There are a number of rather compelling advantages to [[https://plaintextaccounting.org/][plain text accounting]],
-with [[https://www.ledger-cli.org/][ledger]] being the most obvious example. However, [[https://github.com/beancount/beancount][beancount]], a more recent
-implementation of the idea is ledger-compatible (meaning I can switch easily if
-I change my mind) and has a gorgeous front-end --- [[https://beancount.github.io/fava/][fava]].
-
-Of course, there's an Emacs mode for this.
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! beancount :recipe (:host github :repo "beancount/beancount-mode")
-  :pin "ea8257881b7e276e8d170d724e3b2e179f25cb77")
-#+end_src
-
-#+begin_src emacs-lisp
-(use-package! beancount
-  :mode ("\\.beancount\\'" . beancount-mode)
-  :init
-  (after! all-the-icons
-    (add-to-list 'all-the-icons-icon-alist
-                 '("\\.beancount\\'" all-the-icons-material "attach_money" :face all-the-icons-lblue))
-    (add-to-list 'all-the-icons-mode-icon-alist
-                 '(beancount-mode all-the-icons-material "attach_money" :face all-the-icons-lblue)))
-  :config
-  (setq beancount-electric-currency t)
-  (defun beancount-bal ()
-    "Run bean-report bal."
-    (interactive)
-    (let ((compilation-read-command nil))
-      (beancount--run "bean-report"
-                      (file-relative-name buffer-file-name) "bal")))
-  (map! :map beancount-mode-map
-        :n "TAB" #'beancount-align-to-previous-number
-        :i "RET" (cmd! (newline-and-indent) (beancount-align-to-previous-number))))
 #+end_src
