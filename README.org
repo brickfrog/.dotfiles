@@ -14,26 +14,27 @@ that aren't included, but I trust you'll be able to find the respective files if
 :ID:       c7691611-40ba-482f-8665-8fbbfac90d6c
 :END:
 
-|              |                            |
-|--------------+----------------------------|
+|            |                            |
+|------------+----------------------------|
 | *OS:*        | Arch (endeavourOS)         |
 | *Shell:*     | zsh + ohmyzsh              |
-| *WM:*        | bspwm + polybar            |
-| *Editor:*    | Doom Emacs / nvim / vscode |
+| *WM:*        | awesome                    |
+| *Editor:*    | Doom Emacs / nvim          |
 | *Terminal:*  | kitty                      |
 | *Launcher:*  | rofi                       |
-| *Browser:*   | vivaldi / firefox          |
-| *GTK Theme:* | [[https://github.com/jasperro/FlatColor][Flatcolor]]                  |
+| *Browser:*   | firefox                    |
+| *GTK Theme:* | [[https://github.com/jasperro/FlatColor][flatcolor-dark]]             |
 
 Note that I make use of emacs primarily, with nvim plugged into vscode for
-occasions, bspwm/sxhkd/polybar with scripts for wal theming. Not -as- cohesive
-as I like, but I enjoy changing colors too much to get super picky about one thing.
+occasions where it's more convenient.
 
 ** Theme Sample
 
 [[sample.png]]
 
-** Thanks (because I basically used your stuff)
+[[sample2.png]]
+
+** Thanks
 
 - Primarily to tecosaur, whose [[tecosaur.github.io/emacs-config/config.html][config]] for emacs I used as a base (and who is
   also a maintainer for quite a bit of the modules)
