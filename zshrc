@@ -59,13 +59,6 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 #### MISCELLANEOUS ####
 (cat $HOME/.config/wpg/sequences &)
 
-# ACCURSED BSPWMRC
-# For some reason this refuses to run anywhere but here
-# TODO: figure out this stupid window reorder
-# but for now, it'll order them correctly when I open a terminal
-# and I assume speed/blah blah, etc. is negligible
-bspc wm -O DP-4 DP-3 DP-0
-
 # printing fortune before each new terminal
 fortune -s
 printf "\n"

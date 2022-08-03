@@ -2,3 +2,8 @@
 .idea
 *.log
 tmp/
+doom.d/setup.sh
+doom.d/cli.el
+doom.d/config.el
+doom.d/init.el
+doom.d/packages.el
