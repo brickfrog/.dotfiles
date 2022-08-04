@@ -6,8 +6,13 @@ These are my dotfiles, using [[https://github.com/thoughtbot/rcm][rcm]]. If you
 want to copy my config without using rcm, you could just clone and place the
 folders in the appropriate place, e.g.  =/.dotfiles/doom.d -> ~/.doom.d=.
 
-This isn't all-encompassing, as there's probably some python scripts and such
-that aren't included, but I trust you'll be able to find the respective files if needed.
+This isn't 100%-all-encompassing, as there's probably some python scripts and such
+that aren't included (pywal, etc.), but I trust you'll be able to find the respective files
+if needed. Most are for programmatic theming and the core .configs are included here.
+
+As of 07/2022 I've moved to awesome, but I'm keeping my bspwm config just as a curiosity if 
+anyone wants. It works better for dynamic theming with no effort but there was a bit too much
+jank for gaming (e.g, polybar not hiding even though restack is set to bspwm, etc.)
 
 * Notes :ATTACH:
 :PROPERTIES:
