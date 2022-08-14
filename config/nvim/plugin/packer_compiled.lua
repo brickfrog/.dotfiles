@@ -69,6 +69,22 @@ end
 time([[try_loadstring definition]], false)
 time([[Defining packer_plugins]], true)
 _G.packer_plugins = {
+  ["cmp-latex-symbols"] = {
+    after_files = { "/home/justin/.local/share/nvim/site/pack/packer/opt/cmp-latex-symbols/after/plugin/cmp_latex.lua" },
+    load_after = {},
+    loaded = true,
+    needs_bufread = false,
+    path = "/home/justin/.local/share/nvim/site/pack/packer/opt/cmp-latex-symbols",
+    url = "https://github.com/kdheepak/cmp-latex-symbols"
+  },
+  ["cmp-vsnip"] = {
+    after_files = { "/home/justin/.local/share/nvim/site/pack/packer/opt/cmp-vsnip/after/plugin/cmp_vsnip.vim" },
+    load_after = {},
+    loaded = true,
+    needs_bufread = false,
+    path = "/home/justin/.local/share/nvim/site/pack/packer/opt/cmp-vsnip",
+    url = "https://github.com/hrsh7th/cmp-vsnip"
+  },
   ["coc.nvim"] = {
     loaded = true,
     path = "/home/justin/.local/share/nvim/site/pack/packer/start/coc.nvim",
@@ -80,10 +96,32 @@ _G.packer_plugins = {
     path = "/home/justin/.local/share/nvim/site/pack/packer/start/hop.nvim",
     url = "https://github.com/phaazon/hop.nvim"
   },
+  ["lspsaga.nvim"] = {
+    load_after = {},
+    loaded = true,
+    needs_bufread = false,
+    path = "/home/justin/.local/share/nvim/site/pack/packer/opt/lspsaga.nvim",
+    url = "https://github.com/glepnir/lspsaga.nvim"
+  },
   ["lualine.nvim"] = {
     loaded = true,
     path = "/home/justin/.local/share/nvim/site/pack/packer/start/lualine.nvim",
     url = "https://github.com/nvim-lualine/lualine.nvim"
+  },
+  ["nvim-cmp"] = {
+    loaded = true,
+    path = "/home/justin/.local/share/nvim/site/pack/packer/start/nvim-cmp",
+    url = "https://github.com/hrsh7th/nvim-cmp"
+  },
+  ["nvim-lsp"] = {
+    loaded = true,
+    path = "/home/justin/.local/share/nvim/site/pack/packer/start/nvim-lsp",
+    url = "https://github.com/neovim/nvim-lsp"
+  },
+  ["nvim-lspconfig"] = {
+    loaded = true,
+    path = "/home/justin/.local/share/nvim/site/pack/packer/start/nvim-lspconfig",
+    url = "https://github.com/neovim/nvim-lspconfig"
   },
   ["nvim-treesitter"] = {
     loaded = true,
@@ -121,20 +159,47 @@ _G.packer_plugins = {
     path = "/home/justin/.local/share/nvim/site/pack/packer/start/telescope.nvim",
     url = "https://github.com/nvim-telescope/telescope.nvim"
   },
-  ["tokyonight.nvim"] = {
+  ultisnips = {
     loaded = true,
-    path = "/home/justin/.local/share/nvim/site/pack/packer/start/tokyonight.nvim",
-    url = "https://github.com/folke/tokyonight.nvim"
+    path = "/home/justin/.local/share/nvim/site/pack/packer/start/ultisnips",
+    url = "https://github.com/SirVer/ultisnips"
   },
   ["vim-commentary"] = {
     loaded = true,
     path = "/home/justin/.local/share/nvim/site/pack/packer/start/vim-commentary",
     url = "https://github.com/tpope/vim-commentary"
   },
+  ["vim-slime"] = {
+    loaded = true,
+    path = "/home/justin/.local/share/nvim/site/pack/packer/start/vim-slime",
+    url = "https://github.com/jpalardy/vim-slime"
+  },
+  ["vim-snippets"] = {
+    loaded = true,
+    path = "/home/justin/.local/share/nvim/site/pack/packer/start/vim-snippets",
+    url = "https://github.com/honza/vim-snippets"
+  },
   ["vim-startify"] = {
     loaded = true,
     path = "/home/justin/.local/share/nvim/site/pack/packer/start/vim-startify",
     url = "https://github.com/mhinz/vim-startify"
+  },
+  ["vim-vsnip"] = {
+    load_after = {},
+    loaded = true,
+    needs_bufread = false,
+    path = "/home/justin/.local/share/nvim/site/pack/packer/opt/vim-vsnip",
+    url = "https://github.com/hrsh7th/vim-vsnip"
+  },
+  ["vim-vsnip-integ"] = {
+    loaded = true,
+    path = "/home/justin/.local/share/nvim/site/pack/packer/start/vim-vsnip-integ",
+    url = "https://github.com/hrsh7th/vim-vsnip-integ"
+  },
+  ["xresources-nvim"] = {
+    loaded = true,
+    path = "/home/justin/.local/share/nvim/site/pack/packer/start/xresources-nvim",
+    url = "https://github.com/nekonako/xresources-nvim"
   }
 }
 
@@ -147,6 +212,15 @@ time([[Config for surround.nvim]], false)
 time([[Config for hop.nvim]], true)
 try_loadstring("\27LJ\2\nU\0\0\3\0\4\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0B\0\2\1K\0\1\0\1\0\1\tkeys\28etovxqpdygfblzhckisuran\nsetup\bhop\frequire\0", "config", "hop.nvim")
 time([[Config for hop.nvim]], false)
+-- Load plugins in order defined by `after`
+time([[Sequenced loading]], true)
+vim.cmd [[ packadd nvim-lspconfig ]]
+vim.cmd [[ packadd lspsaga.nvim ]]
+vim.cmd [[ packadd nvim-cmp ]]
+vim.cmd [[ packadd vim-vsnip ]]
+vim.cmd [[ packadd cmp-latex-symbols ]]
+vim.cmd [[ packadd cmp-vsnip ]]
+time([[Sequenced loading]], false)
 if should_profile then save_profiles() end
 
 end)
