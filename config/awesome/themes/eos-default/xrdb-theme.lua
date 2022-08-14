@@ -38,33 +38,25 @@ theme.wallpaper = "~/Pictures/Wallpapers/cyberpunk-highlife.jpg"
 theme.font                                      = "Noto Sans Regular 11"
 theme.taglist_font                              = "Noto Sans Regular 11"
 
--- Theme colors for Aura
-theme.bg_normal                                 = "#15141b"
-theme.bg_focus                                  = "#54c59f" -- cyan
-theme.bg_urgent                                 = "#c55858" -- red
-theme.bg_minimize                               = "#c7a06f" -- yellow
+-- Theme colors.
+theme.bg_normal                                 = xrdb.background
+theme.bg_focus                                  = xrdb.color12
+theme.bg_urgent                                 = xrdb.color9
+theme.bg_minimize                               = xrdb.color8
 theme.bg_systray                                = theme.bg_normal
-
-theme.fg_normal                                 = "#bdbdbd"
+theme.fg_normal                                 = xrdb.foreground
 theme.fg_focus                                  = theme.bg_normal
 theme.fg_urgent                                 = theme.bg_normal
 theme.fg_minimize                               = theme.bg_normal
-
-theme.taglist_fg_focus                          = "#61ffca"
-theme.taglist_bg_focus                          = "#8464c6"
-theme.tasklist_bg_focus                         = "c558585"
+theme.taglist_fg_focus                          = "#FFFFFF"
+theme.tasklist_bg_focus                         = xrdb.color1
 theme.tasklist_fg_focus                         = "#FFFFFF"
-
-theme.border_normal                             = "#a277ff" -- purple
+theme.border_normal                             = xrdb.color1
 theme.border_focus                              = theme.bg_focus
-theme.border_marked                             = "#c17ac8" -- pink
-
+theme.border_marked                             = xrdb.color10
 theme.titlebar_bg_focus                         = theme.bg_focus
 theme.titlebar_bg_normal                        = theme.bg_normal
 theme.titlebar_fg_focus                         = theme.fg_focus
-
-theme.arrow1                                    = "#c55858"
-theme.arrow2                                    = "#8464c6"
 
 -- Menu and border widths.
 theme.border_width                              = 2
@@ -231,11 +223,15 @@ function theme.at_screen_connect(s)
    s.quake = lain.util.quake({ app = "termite", height = 0.50, argname = "--name %s" })
 
     -- If wallpaper is a function, call it with the screen
-    local wallpaper = theme.wallpaper
-    if type(wallpaper) == "function" then
-        wallpaper = wallpaper(s)
+    --local wallpaper = theme.wallpaper
+    --if type(wallpaper) == "function" then
+    --    wallpaper = wallpaper(s)
+    --end
+    --gears.wallpaper.maximized(wallpaper, s, true)
+
+    if s == screen.primary then
+        os.execute("~/.config/awesome/theming.sh")
     end
-    gears.wallpaper.maximized(wallpaper, s, true)
 
     -- All tags open with layout 1
     awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
@@ -267,7 +263,7 @@ function theme.at_screen_connect(s)
     weather_key = f :read()
     f :close()
     
-    -- Might be a better way to do this, but it puts all the widgets on primary moniter
+    -- Might be a better way to do this, but it puts all the widgets on primary montir
     -- except the taglist, which is on all side monitors
     if s == screen.primary then
         -- Add widgets to the wibox
@@ -294,22 +290,30 @@ function theme.at_screen_connect(s)
             { -- Right widgets
                 layout = wibox.layout.fixed.horizontal,
                 --using separators
-                arrow("alpha", theme.arrow1),
+                --arrow(theme.bg_normal, "#343434"),
+                -- wibox.container.background(wibox.container.margin(wibox.widget { mailicon, mail and mail.widget, layout = wibox.layout.align.horizontal }, 4, 7), "#343434"),
+                --arrow("alpha", xrdb.color12),
+                --wibox.container.background(wibox.container.margin(wibox.widget { mpdicon, theme.mpd.widget, layout = wibox.layout.align.horizontal }, 3, 6), xrdb.color12),
+                arrow("alpha", xrdb.color12),
                 wibox.container.background(wibox.container.margin
                                            (wibox.widget
-                                            { memicon, mem.widget, layout = wibox.layout.align.horizontal }, 2, 3), theme.arrow1),
-                arrow(theme.arrow1, theme.arrow2),
+                                            { memicon, mem.widget, layout = wibox.layout.align.horizontal }, 2, 3), xrdb.color12),
+                arrow(xrdb.color12, xrdb.color9),
                 wibox.container.background(wibox.container.margin
                                            (wibox.widget
-                                            { cpuicon, cpu.widget, layout = wibox.layout.align.horizontal }, 3, 4), theme.arrow2),
-                arrow(theme.arrow2, theme.arrow1),
+                                            { cpuicon, cpu.widget, layout = wibox.layout.align.horizontal }, 3, 4), xrdb.color9),
+                --arrow("xrdb.color9", xrdb.color12)
+                --wibox.container.background(wibox.container.margin(wibox.widget { tempicon, temp.widget, layout = wibox.layout.align.horizontal }, 4, 4), xrdb.color12),
+                --arrow(xrdb.color12,"xrdb.color9"),
+                --wibox.container.background(wibox.container.margin(wibox.widget { weathericon, theme.weather.widget, layout = wibox.layout.align.horizontal }, 3, 3), "xrdb.color9"),
+                arrow(xrdb.color9, xrdb.color12),
                 wibox.container.background(wibox.container.margin
                                            (wibox.widget
-                                            { nil, neticon, net.widget, layout = wibox.layout.align.horizontal }, 4, 4), theme.arrow1),
-                arrow(theme.arrow1, theme.arrow2),
+                                            { nil, neticon, net.widget, layout = wibox.layout.align.horizontal }, 4, 4), xrdb.color12),
+                arrow(xrdb.color12, xrdb.color9),
                 wibox.container.background(wibox.container.margin
-                                           (clock, 4, 8), theme.arrow2),
-                arrow(theme.arrow2, "alpha"),
+                                           (clock, 4, 8), xrdb.color9),
+                arrow(xrdb.color9, "alpha"),
                 --]]
                 separator,
                 weather_widget({
