@@ -10,7 +10,7 @@
 Org-mode nodes represent topics parsed into the RSS reader (elfeed),
 with feeds assigned tags by their parent headings. I'm also including my
 favorite articles by a specific post with lists that aren't parsed (in no
-particular order).
+particular order - assuming I remember to do this).
 
 Right now I am additionally exporting this as my "blog roll" section of my main
 site. I could probably stand to clean this up, but still it shows the stuff I
