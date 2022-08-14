@@ -29,9 +29,6 @@ AUTO_NOTIFY_IGNORE+=("lf", "emacs", "kitty")
 
 #### Program Stuff ####
 
-# PyWal setup and function
-(cat ~/.cache/wal/sequences &)
-
 # adding zoxide
 eval "$(zoxide init zsh)"
 
@@ -57,7 +54,10 @@ alias ee='emacsclient --eval "(emacs-everywhere)"'
 export _JAVA_AWT_WM_NONREPARENTING=1
 
 #### MISCELLANEOUS ####
-(cat $HOME/.config/wpg/sequences &)
+
+# Color scheme stuff, using wal or wpg
+# (cat $HOME/.config/wpg/sequences &)
+# (cat ~/.cache/wal/sequences &)
 
 # printing fortune before each new terminal
 fortune -s

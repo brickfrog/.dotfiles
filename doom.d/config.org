@@ -1771,8 +1771,10 @@ It's nice to have completions almost all the time, in my opinion. Key strokes
 are just waiting to be saved!
 #+begin_src emacs-lisp
 (after! company
-  (setq company-idle-delay 0.5
-        company-minimum-prefix-length 2)
+  (setq company-idle-delay 1.0
+        company-minimum-prefix-length 2
+        company-box-doc-delay 1.5
+        company-tooltip-maximum-width 50)
   (setq company-show-numbers t)
   (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
 #+end_src
@@ -1782,6 +1784,31 @@ let's improve that memory.
 (setq-default history-length 1000)
 (setq-default prescient-history-length 1000)
 #+end_src
+
+Patch for fixing company-box's window floating off the side.
+#+begin_src emacs-lisp
+(defun company-box-doc--make-buffer-fixed (object)
+     (let* ((buffer-list-update-hook nil)
+            (inhibit-modification-hooks t)
+            (string (cond ((stringp object) object)
+                          ((bufferp object) (with-current-buffer object (buffer-string))))))
+       (when (and string (> (length (string-trim string)) 0))
+         (with-current-buffer (company-box--get-buffer "doc")
+           (erase-buffer)
+           (insert string)
+           (setq mode-line-format nil
+                 display-line-numbers nil
+                 header-line-format nil
+                 show-trailing-whitespace nil
+                 cursor-in-non-selected-windows nil)
+
+           (toggle-truncate-lines -1) ;; PATCHED HERE
+
+           (current-buffer)))))
+
+(advice-add 'company-box-doc--make-buffer :override #'company-box-doc--make-buffer-fixed)
+#+end_src
+
 **** ESS
 
 ~company-dabbrev-code~ is nice. Let's have it.
@@ -4031,16 +4058,21 @@ set up org-capture.
     (let ((templates (doct-flatten-lists-in groups)))
       (setq doct-templates (mapcar (lambda (template)
                                     (when-let* ((props (nthcdr (if (= (length template) 4) 2 5) template))
-                                                 (spec (plist-get (plist-get props :doct) :icon)))
+                                                (spec (plist-get (plist-get props :doct) :icon)))
                                        (setf (nth 1 template) (concat (+doct-icon-declaration-to-icon spec)
                                                                       "\t"
                                                                       (nth 1 template))))
-                                     template)
+                                    template)
                                    templates))))
 
   (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
 
-  (defvar +org-capture-recipies  "~/.org/recipies.org")
+  (defvar +org-capture-recipes  "~/.org/recipes.org")
+  (defvar +org-capture-slipbox  "~/.org/brain/slip-box.org")
+
+  (defun jethro/org-capture-slipbox ()
+     (interactive)
+     (org-capture nil "s"))
 
   (defun set-org-capture-templates ()
     (setq org-capture-templates
@@ -4052,6 +4084,13 @@ set up org-capture.
                    :type entry
                    :template ("* TODO %?"
                               "%i %a"))
+                  ("Slip-box" :keys "s"
+                   :icon ("bubble_chart" :set "material" :color "silver")
+                   :file +org-capture-slipbox
+                   :prepend t
+                   :headline "Inbox"
+                   :type entry
+                   :template ("* %?"))
                   ("Interesting" :keys "i"
                    :icon ("eye" :set "faicon" :color "lcyan")
                    :file +org-capture-todo-file
@@ -4068,19 +4107,11 @@ set up org-capture.
                                :icon ("file-text" :set "octicon" :color "yellow")
                                :desc ""
                                :i-type "read:reaserch")
-                              ("\tRecipie" :keys "r"
+                              ("\tRecipe" :keys "r"
                                :icon ("spoon" :set "faicon" :color "dorange")
-                               :file +org-capture-recipies
+                               :file +org-capture-recipes
                                :headline "Unsorted"
-                               :template "%(org-chef-get-recipe-from-url)")
-                              ("Information" :keys "i"
-                               :icon ("info-circle" :set "faicon" :color "blue")
-                               :desc ""
-                               :i-type "read:info")
-                              ("Idea" :keys "I"
-                               :icon ("bubble_chart" :set "material" :color "silver")
-                               :desc ""
-                               :i-type "idea")))
+                               :template "%(org-chef-get-recipe-from-url)")))
                   ("Tasks" :keys "k"
                    :icon ("inbox" :set "octicon" :color "yellow")
                    :file +org-capture-todo-file
@@ -4376,6 +4407,7 @@ Some functions from Jethro Kuan used to process the captured inbox
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
 (setq org-roam-directory "~/.org/brain/")
+(setq org-roam-db-location "~/.org/brain/org-roam.db")
 #+end_src
 
 That said, if the directory doesn't exist we likely don't want to be using roam.
@@ -4408,6 +4440,26 @@ by [[https:jethrokuan.github.io/org-roam-guide/][Jethro Kuan's org-roam guide]] 
           ,#+last_modified: %U\n\n")
          :immediate-finish t
          :unnarrowed t)
+        ("p" "person" plain
+         "%?"
+         :if-new
+         (file+head "main/${slug}.org"
+          "#+title: ${title}
+           ,#+filetags: :person:
+           ,#+created: %U
+           ,#+last_modified: %U\n\n")
+         :immediate-finish t
+         :unnarrowed t)
+        ("w" "work" plain
+         "%?"
+         :if-new
+         (file+head "work/${slug}.org"
+          "#+title: ${title}
+           ,#+filetags: :private:
+           ,#+created: %U
+           ,#+last_modified: %U\n\n")
+         :immediate-finish t
+         :unnarrowed t)
         ("r" "reference" plain
          "%?"
          :if-new
@@ -4426,7 +4478,8 @@ by [[https:jethrokuan.github.io/org-roam-guide/][Jethro Kuan's org-roam guide]] 
                    ,#+HUGO_AUTO_SET_LASTMOD: t
                    ,#+TITLE: ${title}
                    ,#+DATE: %U
-                   ,#+HUGO_TAGS: hugo org
+                   ,#+HUGO_TAGS: draft
+                   ,#+macro: sidenote @@html:{{% sidenote '$1' $2 %}} $3 {{% /sidenote %}}@@
                    ,#+HUGO_DRAFT: true\n")
          :immediate-finish t
          :unnarrowed t)))
@@ -4517,17 +4570,23 @@ Jethro Kuan's function for parsing references.
 
 (defun jethro/org-roam-node-from-cite (keys-entries)
     (interactive (list (citar-select-ref :multiple nil :rebuild-cache t)))
-    (let ((title (citar--format-entry-no-widths (cdr keys-entries)
-                                                "${author editor} :: ${title}")))
-      (org-roam-capture- :templates
-                         '(("r" "reference" plain "%?" :if-new
-                            (file+head "reference/${citekey}.org"
-":PROPERTIES:\n:ROAM_REFS: [cite:@${citekey}]\n:END:\n#+title: ${title}\n#+created: %U\n#+last_modified: %U\n")
-                            :immediate-finish t
-                            :unnarrowed t))
-                         :info (list :citekey (car keys-entries))
-                         :node (org-roam-node-create :title title)
-                         :props '(:finalize find-file))))
+    (let ((title (citar--format-entry-no-widths (cdr keys-entries) "${author editor} :: ${title}")))
+
+     (org-roam-capture- :templates
+                        '(("r" "reference" plain "%?" :if-new
+                           (file+head "reference/${citekey}.org"
+                            ":PROPERTIES:\n:ROAM_REFS: [cite:@${citekey}]\n:END:
+                              ,#+title: ${title}
+                              ,#+medium: ${medium}
+                              ,#+author: ${author}
+                              ,#+year: ${year}
+                              ,#+created: %U
+                              ,#+last_modified: %U\n")
+                           :immediate-finish t
+                           :unnarrowed t))
+                        :info (list :citekey (car keys-entries))
+                        :node (org-roam-node-create :title title)
+                        :props '(:finalize find-file))))
 #+end_src
 **** Nicer generated heading IDs
 
@@ -5152,11 +5211,11 @@ other settings.
             :arrow_lr      "⟷"
             :properties    "⚙"
             :end           "∎"
-            :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
-            :priority_b   ,(propertize "⬆" 'face 'all-the-icons-orange)
+            :priority_a   ,(propertize "■" 'face 'all-the-icons-red)
+            :priority_b   ,(propertize "■" 'face 'all-the-icons-orange)
             :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
-            :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
-            :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
+            :priority_d   ,(propertize "■" 'face 'all-the-icons-green)
+            :priority_e   ,(propertize "■" 'face 'all-the-icons-blue)))
 (set-ligatures! 'org-mode
   :merge t
   :list_property "::"
@@ -5680,6 +5739,7 @@ Julia server. The pseudo-fix is rather simple at least
     (setq-local lsp-enable-folding t
                 lsp-folding-range-limit 100)))
 #+end_src
+
 ** Graphviz
 
 A nice method of visualising simple graphs, based on plaintext

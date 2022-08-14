@@ -1,26 +1,24 @@
 --[[
+        justin.vc's modification of:
+
         EndeavourOS Awesome WM configuration template.
         More info       :   https://github.com/awesomeWM
-
         Created by      :   S4NDM4N
-
         Personal repo   :   https://github.com/s4ndm4n82/eos-awesome-ce
-
         Offical repo    :   https://github.com/EndeavourOS-Community-Editions/awesome
 
-        Used tecnologies
+        Used technologies
         ~~~~~~~~~~~~~~~~
         freedesktop     :   https://github.com/lcpz/awesome-freedesktop
-
         Copycats themes :   https://github.com/lcpz/awesome-copycats
-
         Lain            :   https://github.com/lcpz/lain
-
+        awesome widgets :   https://github.com/streetturtle/awesome-wm-widgets
 --]]
 
 -- {{{ Required library.
 local awesome, client, mouse, screen, tag = awesome, client, mouse, screen, tag
 local ipairs, string, os, table, tostring, tonumber, type = ipairs, string, os, table, tostring, tonumber, type
+
 
 -- Standard awesome library.
 local gears         =   require("gears") --Utilities such as color parsing and objects.
@@ -120,9 +118,6 @@ end)
 end
 -- }}}
 
--- {{{ Theming for wal, kitty, etc. - change wallpaper there
-awful.spawn.easy_async_with_shell("~/.config/awesome/theming.sh")
--- }}}
 
 -- {{{ To autostart windowsless processes.
 local function runOnce(cmdArr)
@@ -136,14 +131,6 @@ runOnce({ "unclutter -root" }) -- Entries must be comma-separated.
 
 
 local themes = {
-    --[[
-    Add the folder name as shown below one after the other as a new line.
-    The position of the name is the number you need to add as the number of your
-    chosen  theme.
-        "powerarrow-blue", -- 1
-        "powerarrow",      -- 2
-        "multicolor",      -- 3
-    --]]    
     "eos-default", --1
 }
 
@@ -729,6 +716,7 @@ awful.rules.rules = {
         instance = {
           "DTA",  -- Firefox addon DownThemAll.
           "copyq",  -- Includes session name in class.
+          "xfce4-terminal", -- xfc4 terminal for dropdown
           "yad", -- For yad windows.
         },
         class = {

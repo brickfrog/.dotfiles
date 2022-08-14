@@ -1,7 +1,8 @@
 --[[
 
-     EndeavourOS Awesome WM theme
-     Created by: S4NDM4N
+     AwesomeWM theme
+     Created by: brickfrog
+     Templating: S4NDM4N
 
 --]]
 --{{{ Required libraries.
@@ -9,13 +10,16 @@ local gears = require("gears")
 local lain  = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
-local xresources = require("beautiful.xresources")
-local theme_assets = require("beautiful.theme_assets")
-local xrdb = xresources.get_current_theme()
-
 
 local math, string, os = math, string, os
 local myTable = awful.util.table or gears.table -- 4.{0,1} compatibility
+-- }}}
+
+-- {{{ Theming for wal, kitty, etc. - change wallpaper there
+
+xresources = require("beautiful.xresources")
+xrdb = xresources.get_current_theme()
+
 -- }}}
 
 -- {{{ Initiating theme variable.
@@ -26,12 +30,13 @@ local theme                                     = {}
 -- Theme config folder
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/eos-default"
 
--- Theme wallpaper.
--- theme.wallpaper                                 = "/usr/share/endeavouros/backgrounds/endeavouros-wallpaper.png"
+--- {{{ Wallpaper
+theme.wallpaper = "~/Pictures/Wallpapers/cyberpunk-highlife.jpg"
+--- }}}
 
 -- Theme fonts.
-theme.font                                      = "Noto Sans Regular 10"
-theme.taglist_font                              = "Noto Sans Regular 10"
+theme.font                                      = "Noto Sans Regular 11"
+theme.taglist_font                              = "Noto Sans Regular 11"
 
 -- Theme colors.
 theme.bg_normal                                 = xrdb.background
@@ -44,8 +49,8 @@ theme.fg_focus                                  = theme.bg_normal
 theme.fg_urgent                                 = theme.bg_normal
 theme.fg_minimize                               = theme.bg_normal
 theme.taglist_fg_focus                          = "#FFFFFF"
-theme.tasklist_bg_focus                         = "#000000"
-theme.tasklist_fg_focus                         = "#FF7E7E"
+theme.tasklist_bg_focus                         = xrdb.color1
+theme.tasklist_fg_focus                         = "#FFFFFF"
 theme.border_normal                             = xrdb.color1
 theme.border_focus                              = theme.bg_focus
 theme.border_marked                             = xrdb.color10
@@ -148,75 +153,6 @@ theme.cal = lain.widget.cal({
     }
 })
 
-
-
--- Taskwarrior
---[[
-local task = wibox.widget.imagebox(theme.widget_task)
-lain.widget.contrib.task.attach(task, {
-     do not colorize output
-    show_cmd = "task | sed -r 's/\\x1B\\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g'"
-})
-task:buttons(gears.table.join(awful.button({}, 1, lain.widget.contrib.task.prompt)))
---]]
-
--- Mail IMAP check
-local mailicon = wibox.widget.imagebox(theme.widget_mail)
---[[ commented because it needs to be set before use
-mailicon:buttons(myTable.join(awful.button({ }, 1, function () awful.spawn(mail) end)))
-theme.mail = lain.widget.imap({
-    timeout  = 180,
-    server   = "server",
-    mail     = "mail",
-    password = "keyring get mail",
-    settings = function()
-        if mailcount > 0 then
-            widget:set_text(" " .. mailcount .. " ")
-            mailicon:set_image(theme.widget_mail_on)
-        else
-            widget:set_text("")
-            mailicon:set_image(theme.widget_mail)
-        end
-    end
-})
---]]
-
--- MPD
-local musicplr = "urxvt -title Music -g 130x34-320+16 -e ncmpcpp"
-local mpdicon = wibox.widget.imagebox(theme.widget_music)
-mpdicon:buttons(myTable.join(
-    awful.button({ modkey }, 1, function () awful.spawn.with_shell(musicplr) end),
-    --[[awful.button({ }, 1, function ()
-        awful.spawn.with_shell("mpc prev")
-        theme.mpd.update()
-    end),
-    --]]
-    awful.button({ }, 2, function ()
-        awful.spawn.with_shell("mpc toggle")
-        theme.mpd.update()
-    end),
-    awful.button({ modkey }, 3, function () awful.spawn.with_shell("pkill ncmpcpp") end),
-    awful.button({ }, 3, function ()
-        awful.spawn.with_shell("mpc stop")
-        theme.mpd.update()
-    end)))
-theme.mpd = lain.widget.mpd({
-    settings = function()
-        if mpd_now.state == "play" then
-            artist = " " .. mpd_now.artist .. " "
-            title  = mpd_now.title  .. " "
-            mpdicon:set_image(theme.widget_music_on)
-            widget:set_markup(markup.font(theme.font, markup("#FFFFFF", artist) .. " " .. title))
-        elseif mpd_now.state == "pause" then
-            widget:set_markup(markup.font(theme.font, " mpd paused "))
-            mpdicon:set_image(theme.widget_music_pause)
-        else
-            widget:set_text("")
-            mpdicon:set_image(theme.widget_music)
-        end
-    end
-})
-
 -- MEM
 local memicon = wibox.widget.imagebox(theme.widget_mem)
 local mem = lain.widget.mem({
@@ -233,80 +169,7 @@ local cpu = lain.widget.cpu({
     end
 })
 
---[[ Coretemp (lm_sensors, per core)
-local tempwidget = awful.widget.watch({awful.util.shell, '-c', 'sensors | grep Core'}, 30,
-function(widget, stdout)
-    local temps = ""
-    for line in stdout:gmatch("[^\r\n]+") do
-        temps = temps .. line:match("+(%d+).*°C")  .. "° " -- in Celsius
-    end
-    widget:set_markup(markup.font(theme.font, " " .. temps))
-end)
---]]
--- Coretemp (lain, average)
---[[
-local temp = lain.widget.temp({
-    settings = function()
-        widget:set_markup(markup.font(theme.font, " " .. coretemp_now .. "°C "))
-    end
-})
---]]
 local tempicon = wibox.widget.imagebox(theme.widget_temp)
-
---[[ Weather
-https://openweathermap.org/
-Type in the name of your city
-Copy/paste the city code in the URL to this file in city_id
---]]
---[[
-local weathericon = wibox.widget.imagebox(theme.widget_weather)
-theme.weather = lain.widget.weather({
-    city_id = 2803138, -- placeholder (Belgium)
-    notification_preset = { font = "Mononoki Nerd Font 11", fg = theme.fg_normal },
-    weather_na_markup = markup.fontfg(theme.font, "#ffffff", "N/A "),
-    settings = function()
-        descr = weather_now["weather"][1]["description"]:lower()
-        units = math.floor(weather_now["main"]["temp"])
-        widget:set_markup(markup.fontfg(theme.font, "#ffffff", descr .. " @ " .. units .. "°C "))
-    end
-})
---]]
-
---[[ / fs
-local fsicon = wibox.widget.imagebox(theme.widget_hdd)
-theme.fs = lain.widget.fs({
-    notification_preset = { fg = theme.fg_normal, bg = theme.bg_normal, font = "Noto Sans Mono Medium 10" },
-    settings = function()
-        local fsp = string.format(" %3.2f %s ", fs_now["/"].free, fs_now["/"].units)
-        widget:set_markup(markup.font(theme.font, fsp))
-    end
-})
---]]
-
---[[ Battery
-local baticon = wibox.widget.imagebox(theme.widget_battery)
-local bat = lain.widget.bat({
-    settings = function()
-        if bat_now.status and bat_now.status ~= "N/A" then
-            if bat_now.ac_status == 1 then
-                widget:set_markup(markup.font(theme.font, " AC "))
-                baticon:set_image(theme.widget_ac)
-                return
-            elseif not bat_now.perc and tonumber(bat_now.perc) <= 5 then
-                baticon:set_image(theme.widget_battery_empty)
-            elseif not bat_now.perc and tonumber(bat_now.perc) <= 15 then
-                baticon:set_image(theme.widget_battery_low)
-            else
-                baticon:set_image(theme.widget_battery)
-            end
-            widget:set_markup(markup.font(theme.font, " " .. bat_now.perc .. "% "))
-        else
-            widget:set_markup()
-            baticon:set_image(theme.widget_ac)
-        end
-    end
-})
---]]
 
 -- Audio bar
 local volume_widget = require('awesome-wm-widgets.volume-widget.volume')
@@ -329,7 +192,7 @@ local spotify_widget = require("awesome-wm-widgets.spotify-widget.spotify")
 local github_contributions_widget = require("awesome-wm-widgets.github-contributions-widget.github-contributions-widget")
 
 -- Separators
-local arrow = separators.arrow_left
+local arrow = separators.arrow_right
 
 function theme.powerline_rl(cr, width, height)
     local arrow_depth, offset = height/2, 0
@@ -360,11 +223,15 @@ function theme.at_screen_connect(s)
    s.quake = lain.util.quake({ app = "termite", height = 0.50, argname = "--name %s" })
 
     -- If wallpaper is a function, call it with the screen
-    local wallpaper = theme.wallpaper
-    if type(wallpaper) == "function" then
-        wallpaper = wallpaper(s)
+    --local wallpaper = theme.wallpaper
+    --if type(wallpaper) == "function" then
+    --    wallpaper = wallpaper(s)
+    --end
+    --gears.wallpaper.maximized(wallpaper, s, true)
+
+    if s == screen.primary then
+        os.execute("~/.config/awesome/theming.sh")
     end
-    gears.wallpaper.maximized(wallpaper, s, true)
 
     -- All tags open with layout 1
     awful.tag(awful.util.tagnames, s, awful.layout.layouts[1])
@@ -379,101 +246,113 @@ function theme.at_screen_connect(s)
                            awful.button({ }, 3, function () awful.layout.inc(-1) end),
                            awful.button({ }, 4, function () awful.layout.inc( 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(-1) end)))
+    
     -- Create a taglist widget
     s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, awful.util.taglist_buttons)
-
+    
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, awful.util.tasklist_buttons)
-
+    
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s, height = 20, bg = theme.bg_normal, fg = theme.fg_normal })
-
+    
     -- Convenience functions
     local separator = wibox.widget.textbox("     ")
     -- not particularly secure, but to prevent key from being put in repo(s) 
     f = io.input(os.getenv('HOME') .. '/.env/weather.pem')
     weather_key = f :read()
     f :close()
-
-    -- Add widgets to the wibox
-    s.mywibox:setup {
-        layout = wibox.layout.align.horizontal,
-        expand = "none",
-        { -- Left widgets
-            layout = wibox.layout.fixed.horizontal,
-            --spr,
-            s.mytaglist,
-            s.mypromptbox,
-            spr,
-        },
-        {
-            layout = wibox.layout.fixed.horizontal,
-            awful.widget.only_on_screen(
-            spotify_widget({
-                play_icon = '/usr/share/icons/Papirus/24x24/categories/spotify-client.svg',
-                pause_icon = '/usr/share/icons/Papirus-Dark/24x24/panel/spotify-indicator.svg',
-                max_length = 100,
-                dim_when_paused = true,
-                dim_opacity = 0.1
-             }), screen.primary),
-        },
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            awful.widget.only_on_screen(
-                github_contributions_widget({
-                    username = 'brickfrog',
-                    theme = 'pink'
-                }), 
-                    screen.primary),
-            separator,
-            --[[ using shapes
-            pl(wibox.widget { mpdicon, theme.mpd.widget, layout = wibox.layout.align.horizontal }, "#343434"),
-            pl(task, "#343434"),
-            --pl(wibox.widget { mailicon, mail and mail.widget, layout = wibox.layout.align.horizontal }, "#343434"),
-            pl(wibox.widget { memicon, mem.widget, layout = wibox.layout.align.horizontal }, "#777E76"),
-            pl(wibox.widget { cpuicon, cpu.widget, layout = wibox.layout.align.horizontal }, "#4B696D"),
-            pl(wibox.widget { tempicon, temp.widget, layout = wibox.layout.align.horizontal }, "#4B3B51"),
-            pl(wibox.widget { fsicon, theme.fs.widget, layout = wibox.layout.align.horizontal }, "#CB755B"),
-            pl(wibox.widget { baticon, bat.widget, layout = wibox.layout.align.horizontal }, "#8DAA9A"),
-            pl(wibox.widget { neticon, net.widget, layout = wibox.layout.align.horizontal }, "#C0C0A2"),
-            pl(binclock.widget, "#777E76"),
-            --]]
-            -- using separators
-            --arrow(theme.bg_normal, "#343434"),
-           -- wibox.container.background(wibox.container.margin(wibox.widget { mailicon, mail and mail.widget, layout = wibox.layout.align.horizontal }, 4, 7), "#343434"),
-            --arrow("alpha", "#7E7EFF"),
-            --wibox.container.background(wibox.container.margin(wibox.widget { mpdicon, theme.mpd.widget, layout = wibox.layout.align.horizontal }, 3, 6), "#7E7EFF"),
-            arrow("alpha", "#7E7EFF"),
-            wibox.container.background(wibox.container.margin(wibox.widget { memicon, mem.widget, layout = wibox.layout.align.horizontal }, 2, 3), "#7E7EFF"),
-            arrow("#7E7EFF", "#7E3EBE"),
-            wibox.container.background(wibox.container.margin(wibox.widget { cpuicon, cpu.widget, layout = wibox.layout.align.horizontal }, 3, 4), "#7E3EBE"),
-            --arrow("#7E3EBE", "#7E7EFF"),
-            --wibox.container.background(wibox.container.margin(wibox.widget { tempicon, temp.widget, layout = wibox.layout.align.horizontal }, 4, 4), "#7E7EFF"),
-            --arrow("#7E7EFF", "#7E3EBE"),
-            --wibox.container.background(wibox.container.margin(wibox.widget { weathericon, theme.weather.widget, layout = wibox.layout.align.horizontal }, 3, 3), "#7E3EBE"),
-            arrow("#7E3EBE", "#7E7EFF"),
-            wibox.container.background(wibox.container.margin(wibox.widget { nil, neticon, net.widget, layout = wibox.layout.align.horizontal }, 3, 3), "#7E7EFF"),            
-            arrow("#7E7EFF", "#7E3EBE"),
-            wibox.container.background(wibox.container.margin(clock, 4, 8), "#7E3EBE"),
-            arrow("#7E3EBE", "alpha"),
-            separator,
-            weather_widget({
-                api_key=weather_key,
-                coordinates = {39.0, -84.6},
-                units='imperial',
-                show_hourly_forecast = true,
-                show_daily_forecast = true,
-            }),
-            separator,
-            volume_widget(),
-            separator,
-            wibox.widget.systray(),
-            --s.mylayoutbox,
-        },
-    }
+    
+    -- Might be a better way to do this, but it puts all the widgets on primary montir
+    -- except the taglist, which is on all side monitors
+    if s == screen.primary then
+        -- Add widgets to the wibox
+        s.mywibox:setup {
+            layout = wibox.layout.align.horizontal,
+            expand = "none",
+            { -- Left widgets
+                layout = wibox.layout.fixed.horizontal,
+                --spr,
+                s.mytaglist,
+                s.mypromptbox,
+                spr,
+            },
+            {
+                layout = wibox.layout.fixed.horizontal,
+                spotify_widget({
+                    play_icon = '/usr/share/icons/Papirus/24x24/categories/spotify-client.svg',
+                    pause_icon = '/usr/share/icons/Papirus-Dark/24x24/panel/spotify-indicator.svg',
+                    max_length = 100,
+                    dim_when_paused = true,
+                    dim_opacity = 0.1
+                }),
+            },
+            { -- Right widgets
+                layout = wibox.layout.fixed.horizontal,
+                --using separators
+                --arrow(theme.bg_normal, "#343434"),
+                -- wibox.container.background(wibox.container.margin(wibox.widget { mailicon, mail and mail.widget, layout = wibox.layout.align.horizontal }, 4, 7), "#343434"),
+                --arrow("alpha", xrdb.color12),
+                --wibox.container.background(wibox.container.margin(wibox.widget { mpdicon, theme.mpd.widget, layout = wibox.layout.align.horizontal }, 3, 6), xrdb.color12),
+                arrow("alpha", xrdb.color12),
+                wibox.container.background(wibox.container.margin
+                                           (wibox.widget
+                                            { memicon, mem.widget, layout = wibox.layout.align.horizontal }, 2, 3), xrdb.color12),
+                arrow(xrdb.color12, xrdb.color9),
+                wibox.container.background(wibox.container.margin
+                                           (wibox.widget
+                                            { cpuicon, cpu.widget, layout = wibox.layout.align.horizontal }, 3, 4), xrdb.color9),
+                --arrow("xrdb.color9", xrdb.color12)
+                --wibox.container.background(wibox.container.margin(wibox.widget { tempicon, temp.widget, layout = wibox.layout.align.horizontal }, 4, 4), xrdb.color12),
+                --arrow(xrdb.color12,"xrdb.color9"),
+                --wibox.container.background(wibox.container.margin(wibox.widget { weathericon, theme.weather.widget, layout = wibox.layout.align.horizontal }, 3, 3), "xrdb.color9"),
+                arrow(xrdb.color9, xrdb.color12),
+                wibox.container.background(wibox.container.margin
+                                           (wibox.widget
+                                            { nil, neticon, net.widget, layout = wibox.layout.align.horizontal }, 4, 4), xrdb.color12),
+                arrow(xrdb.color12, xrdb.color9),
+                wibox.container.background(wibox.container.margin
+                                           (clock, 4, 8), xrdb.color9),
+                arrow(xrdb.color9, "alpha"),
+                --]]
+                separator,
+                weather_widget({
+                    api_key=weather_key,
+                    coordinates = {39.0, -84.6},
+                    units='imperial',
+                    show_hourly_forecast = true,
+                    show_daily_forecast = true,
+                }),
+                separator,
+                volume_widget(),
+                separator,
+                wibox.widget.systray(),
+                --s.mylayoutbox,
+            },
+        }
+    else
+        s.mywibox:setup {
+            layout = wibox.layout.align.horizontal,
+            expand = "none",
+            { -- Left widgets
+                layout = wibox.layout.fixed.horizontal,
+                --spr,
+                s.mytaglist,
+                s.mypromptbox,
+                spr,
+            },
+            nil,
+            nil,
+        }
+    end
 
     -- Creating the bottom wibox.
-    s.mybottomwibox = awful.wibar({ position = "bottom", screen = s, border_width = 0, height = 20, bg = theme.bg_normal, fg = theme.fg_normal })
+    s.mybottomwibox = awful.wibar({ position = "bottom",
+                                    screen = s,
+                                    border_width = 0,
+                                    height = 20,
+                                    bg = theme.bg_normal,
+                                    fg = theme.fg_normal })
 
     -- Adding widgets to the bottom wibox.
     s.mybottomwibox:setup {

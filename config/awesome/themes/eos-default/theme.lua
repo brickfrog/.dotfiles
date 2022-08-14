@@ -1,7 +1,8 @@
 --[[
 
-     EndeavourOS Awesome WM theme
-     Created by: S4NDM4N
+     AwesomeWM theme
+     Created by: brickfrog
+     Templating: S4NDM4N
 
 --]]
 --{{{ Required libraries.
@@ -9,13 +10,16 @@ local gears = require("gears")
 local lain  = require("lain")
 local awful = require("awful")
 local wibox = require("wibox")
-local xresources = require("beautiful.xresources")
-local theme_assets = require("beautiful.theme_assets")
-local xrdb = xresources.get_current_theme()
-
 
 local math, string, os = math, string, os
 local myTable = awful.util.table or gears.table -- 4.{0,1} compatibility
+-- }}}
+
+-- {{{ Theming for wal, kitty, etc. - change wallpaper there
+
+xresources = require("beautiful.xresources")
+xrdb = xresources.get_current_theme()
+
 -- }}}
 
 -- {{{ Initiating theme variable.
@@ -26,32 +30,41 @@ local theme                                     = {}
 -- Theme config folder
 theme.dir                                       = os.getenv("HOME") .. "/.config/awesome/themes/eos-default"
 
--- Theme wallpaper.
--- theme.wallpaper                                 = "/usr/share/endeavouros/backgrounds/endeavouros-wallpaper.png"
+--- {{{ Wallpaper
+theme.wallpaper = "~/Pictures/Wallpapers/cyberpunk-highlife.jpg"
+--- }}}
 
 -- Theme fonts.
-theme.font                                      = "Noto Sans Regular 10"
-theme.taglist_font                              = "Noto Sans Regular 10"
+theme.font                                      = "Noto Sans Regular 11"
+theme.taglist_font                              = "Noto Sans Regular 11"
 
--- Theme colors.
-theme.bg_normal                                 = xrdb.background
-theme.bg_focus                                  = xrdb.color12
-theme.bg_urgent                                 = xrdb.color9
-theme.bg_minimize                               = xrdb.color8
+-- Theme colors for Aura
+theme.bg_normal                                 = "#15141b"
+theme.bg_focus                                  = "#54c59f" -- cyan
+theme.bg_urgent                                 = "#c55858" -- red
+theme.bg_minimize                               = "#c7a06f" -- yellow
 theme.bg_systray                                = theme.bg_normal
-theme.fg_normal                                 = xrdb.foreground
+
+theme.fg_normal                                 = "#bdbdbd"
 theme.fg_focus                                  = theme.bg_normal
 theme.fg_urgent                                 = theme.bg_normal
 theme.fg_minimize                               = theme.bg_normal
-theme.taglist_fg_focus                          = "#FFFFFF"
-theme.tasklist_bg_focus                         = "#7851a9"
+
+theme.taglist_fg_focus                          = "#61ffca"
+theme.taglist_bg_focus                          = "#8464c6"
+theme.tasklist_bg_focus                         = "c558585"
 theme.tasklist_fg_focus                         = "#FFFFFF"
-theme.border_normal                             = xrdb.color1
+
+theme.border_normal                             = "#a277ff" -- purple
 theme.border_focus                              = theme.bg_focus
-theme.border_marked                             = xrdb.color10
+theme.border_marked                             = "#c17ac8" -- pink
+
 theme.titlebar_bg_focus                         = theme.bg_focus
 theme.titlebar_bg_normal                        = theme.bg_normal
 theme.titlebar_fg_focus                         = theme.fg_focus
+
+theme.arrow1                                    = "#c55858"
+theme.arrow2                                    = "#8464c6"
 
 -- Menu and border widths.
 theme.border_width                              = 2
@@ -146,75 +159,6 @@ theme.cal = lain.widget.cal({
         fg   = theme.fg_normal,
         bg   = theme.bg_normal
     }
-})
-
-
-
--- Taskwarrior
---[[
-local task = wibox.widget.imagebox(theme.widget_task)
-lain.widget.contrib.task.attach(task, {
-     do not colorize output
-    show_cmd = "task | sed -r 's/\\x1B\\[([0-9]{1,2}(;[0-9]{1,2})?)?[mGK]//g'"
-})
-task:buttons(gears.table.join(awful.button({}, 1, lain.widget.contrib.task.prompt)))
---]]
-
--- Mail IMAP check
-local mailicon = wibox.widget.imagebox(theme.widget_mail)
---[[ commented because it needs to be set before use
-mailicon:buttons(myTable.join(awful.button({ }, 1, function () awful.spawn(mail) end)))
-theme.mail = lain.widget.imap({
-    timeout  = 180,
-    server   = "server",
-    mail     = "mail",
-    password = "keyring get mail",
-    settings = function()
-        if mailcount > 0 then
-            widget:set_text(" " .. mailcount .. " ")
-            mailicon:set_image(theme.widget_mail_on)
-        else
-            widget:set_text("")
-            mailicon:set_image(theme.widget_mail)
-        end
-    end
-})
---]]
-
--- MPD
-local musicplr = "urxvt -title Music -g 130x34-320+16 -e ncmpcpp"
-local mpdicon = wibox.widget.imagebox(theme.widget_music)
-mpdicon:buttons(myTable.join(
-    awful.button({ modkey }, 1, function () awful.spawn.with_shell(musicplr) end),
-    --[[awful.button({ }, 1, function ()
-        awful.spawn.with_shell("mpc prev")
-        theme.mpd.update()
-    end),
-    --]]
-    awful.button({ }, 2, function ()
-        awful.spawn.with_shell("mpc toggle")
-        theme.mpd.update()
-    end),
-    awful.button({ modkey }, 3, function () awful.spawn.with_shell("pkill ncmpcpp") end),
-    awful.button({ }, 3, function ()
-        awful.spawn.with_shell("mpc stop")
-        theme.mpd.update()
-    end)))
-theme.mpd = lain.widget.mpd({
-    settings = function()
-        if mpd_now.state == "play" then
-            artist = " " .. mpd_now.artist .. " "
-            title  = mpd_now.title  .. " "
-            mpdicon:set_image(theme.widget_music_on)
-            widget:set_markup(markup.font(theme.font, markup("#FFFFFF", artist) .. " " .. title))
-        elseif mpd_now.state == "pause" then
-            widget:set_markup(markup.font(theme.font, " mpd paused "))
-            mpdicon:set_image(theme.widget_music_pause)
-        else
-            widget:set_text("")
-            mpdicon:set_image(theme.widget_music)
-        end
-    end
 })
 
 -- MEM
@@ -323,7 +267,7 @@ function theme.at_screen_connect(s)
     weather_key = f :read()
     f :close()
     
-    -- Might be a better way to do this, but it puts all the widgets on primary montir
+    -- Might be a better way to do this, but it puts all the widgets on primary moniter
     -- except the taglist, which is on all side monitors
     if s == screen.primary then
         -- Add widgets to the wibox
@@ -349,40 +293,23 @@ function theme.at_screen_connect(s)
             },
             { -- Right widgets
                 layout = wibox.layout.fixed.horizontal,
-                github_contributions_widget({
-                        username = 'brickfrog',
-                        theme = 'dracula'}), 
-                separator,
-                --[[ using shapes
-                --pl(wibox.widget { mpdicon, theme.mpd.widget, layout = wibox.layout.align.horizontal }, "#343434"),
-                --pl(task, "#343434"),
-                --pl(wibox.widget { mailicon, mail and mail.widget, layout = wibox.layout.align.horizontal }, "#343434"),
-                pl(wibox.widget { memicon, mem.widget, layout = wibox.layout.align.horizontal }, "#777E76"),
-                pl(wibox.widget { cpuicon, cpu.widget, layout = wibox.layout.align.horizontal }, "#4B696D"),
-                --pl(wibox.widget { tempicon, temp.widget, layout = wibox.layout.align.horizontal }, "#4B3B51"),
-                --pl(wibox.widget { fsicon, theme.fs.widget, layout = wibox.layout.align.horizontal }, "#CB755B"),
-                --pl(wibox.widget { baticon, bat.widget, layout = wibox.layout.align.horizontal }, "#8DAA9A"),
-                pl(wibox.widget { neticon, net.widget, layout = wibox.layout.align.horizontal }, "#C0C0A2"),
-                --pl(binclock.widget, "#777E76"),
-                --]]
                 --using separators
-                --arrow(theme.bg_normal, "#343434"),
-                -- wibox.container.background(wibox.container.margin(wibox.widget { mailicon, mail and mail.widget, layout = wibox.layout.align.horizontal }, 4, 7), "#343434"),
-                --arrow("alpha", "#7E7EFF"),
-                --wibox.container.background(wibox.container.margin(wibox.widget { mpdicon, theme.mpd.widget, layout = wibox.layout.align.horizontal }, 3, 6), "#7E7EFF"),
-                arrow("alpha", "#7E7EFF"),
-                wibox.container.background(wibox.container.margin(wibox.widget { memicon, mem.widget, layout = wibox.layout.align.horizontal }, 2, 3), "#7E7EFF"),
-                arrow("#7E7EFF", "#7E3EBE"),
-                wibox.container.background(wibox.container.margin(wibox.widget { cpuicon, cpu.widget, layout = wibox.layout.align.horizontal }, 3, 4), "#7E3EBE"),
-                --arrow("#7E3EBE", "#7E7EFF"),
-                --wibox.container.background(wibox.container.margin(wibox.widget { tempicon, temp.widget, layout = wibox.layout.align.horizontal }, 4, 4), "#7E7EFF"),
-                --arrow("#7E7EFF", "#7E3EBE"),
-                --wibox.container.background(wibox.container.margin(wibox.widget { weathericon, theme.weather.widget, layout = wibox.layout.align.horizontal }, 3, 3), "#7E3EBE"),
-                arrow("#7E3EBE", "#7E7EFF"),
-                wibox.container.background(wibox.container.margin(wibox.widget { nil, neticon, net.widget, layout = wibox.layout.align.horizontal }, 4, 4), "#7E7EFF"),
-                arrow("#7E7EFF", "#7E3EBE"),
-                wibox.container.background(wibox.container.margin(clock, 4, 8), "#7E3EBE"),
-                arrow("#7E3EBE", "alpha"),
+                arrow("alpha", theme.arrow1),
+                wibox.container.background(wibox.container.margin
+                                           (wibox.widget
+                                            { memicon, mem.widget, layout = wibox.layout.align.horizontal }, 2, 3), theme.arrow1),
+                arrow(theme.arrow1, theme.arrow2),
+                wibox.container.background(wibox.container.margin
+                                           (wibox.widget
+                                            { cpuicon, cpu.widget, layout = wibox.layout.align.horizontal }, 3, 4), theme.arrow2),
+                arrow(theme.arrow2, theme.arrow1),
+                wibox.container.background(wibox.container.margin
+                                           (wibox.widget
+                                            { nil, neticon, net.widget, layout = wibox.layout.align.horizontal }, 4, 4), theme.arrow1),
+                arrow(theme.arrow1, theme.arrow2),
+                wibox.container.background(wibox.container.margin
+                                           (clock, 4, 8), theme.arrow2),
+                arrow(theme.arrow2, "alpha"),
                 --]]
                 separator,
                 weather_widget({
