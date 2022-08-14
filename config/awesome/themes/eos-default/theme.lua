@@ -63,8 +63,8 @@ theme.titlebar_bg_focus                         = theme.bg_focus
 theme.titlebar_bg_normal                        = theme.bg_normal
 theme.titlebar_fg_focus                         = theme.fg_focus
 
-theme.arrow1                                    = "#c55858"
-theme.arrow2                                    = "#8464c6"
+theme.arrow1                                    = "#3d375e7f"
+theme.arrow2                                    = "#7851a9"
 
 -- Menu and border widths.
 theme.border_width                              = 2

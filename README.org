@@ -6,9 +6,7 @@ These are my dotfiles, using [[https://github.com/thoughtbot/rcm][rcm]]. If you
 want to copy my config without using rcm, you could just clone and place the
 folders in the appropriate place, e.g.  =/.dotfiles/doom.d -> ~/.doom.d=.
 
-This isn't 100%-all-encompassing, as there's probably some python scripts and such
-that aren't included (pywal, etc.), but I trust you'll be able to find the respective files
-if needed. Most are for programmatic theming and the core .configs are included here.
+Most theming is built around the [[https://github.com/daltonmenezes/aura-theme/][Aura]] theme.
 
 As of 07/2022 I've moved to awesome, but I'm keeping my bspwm config just as a curiosity if 
 anyone wants. It works better for dynamic theming with no effort but there was a bit too much
@@ -19,16 +17,16 @@ jank for gaming (e.g, polybar not hiding even though restack is set to bspwm, et
 :ID:       c7691611-40ba-482f-8665-8fbbfac90d6c
 :END:
 
-|            |                            |
-|------------+----------------------------|
-| *OS:*        | Arch (endeavourOS)         |
-| *Shell:*     | zsh + ohmyzsh              |
-| *WM:*        | awesome                    |
-| *Editor:*    | Doom Emacs / nvim          |
-| *Terminal:*  | kitty                      |
-| *Launcher:*  | rofi                       |
-| *Browser:*   | firefox                    |
-| *GTK Theme:* | [[https://github.com/jasperro/FlatColor][flatcolor-dark]]             |
+|            |                   |
+|------------+-------------------|
+| *OS:*        | endeavourOS       |
+| *Shell:*     | zsh + ohmyzsh     |
+| *WM:*        | awesome           |
+| *Editor:*    | Doom Emacs / nvim |
+| *Terminal:*  | kitty             |
+| *Launcher:*  | rofi              |
+| *Browser:*   | firefox           |
+| *GTK Theme:* | [[https://www.gnome-look.org/p/1246387][Ultimate Dark]]     |
 
 Note that I make use of emacs primarily, with nvim plugged into vscode for
 occasions where it's more convenient.

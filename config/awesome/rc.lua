@@ -151,7 +151,7 @@ local browser           = "firefox"
 local terminal          = "kitty"
 local editor            = os.getenv("EDITOR") or "nano"
 local guiEditor         = "emacs"
-local filemanager       = "thunar"
+local filemanager       = "nautilus"
 local lockscreen        = "light-locker-command -l"
 
 -- {{{ Set the path to awesome config file
