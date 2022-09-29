@@ -224,7 +224,7 @@ navigation/swapping commands.
 #+end_src
 *** Buffer defaults
 
-I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
+I'd much rather have my new buffers in org-mode~ than ~fundamental-mode~, hence
 #+begin_src emacs-lisp
 ;; (setq-default major-mode 'org-mode)
 #+end_src
@@ -3599,6 +3599,7 @@ specific modes as desired.
 #+begin_src emacs-lisp
 (remove-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'text-mode-hook #'auto-fill-mode)
+(add-hook 'auto-save-hook 'org-save-all-org-buffers)
 #+end_src
 
 There also seem to be a few keybindings which use =hjkl=, but miss arrow key equivalents.
@@ -3908,11 +3909,11 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
 #+end_src
 **** Journal
 
-Just enabling the journal, and making use of encryption, provided by org-crypt
+Just setting the directory for the journal. Didn't want to mix and mesh with the
+roam dailies.
 
 #+begin_src emacs-lisp
 (setq org-journal-dir "~/.org/journal/")
-(setq org-journal-enable-encryption t)
 #+end_src
 **** Clock
 
