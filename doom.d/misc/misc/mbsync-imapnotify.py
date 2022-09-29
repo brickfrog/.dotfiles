@@ -1,0 +1,1 @@
+/home/justin/.dotfiles/doom.d/misc/mbsync-imapnotify.py

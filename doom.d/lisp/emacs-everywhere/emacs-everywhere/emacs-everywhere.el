@@ -1,0 +1,1 @@
+/home/justin/.dotfiles/doom.d/lisp/emacs-everywhere/emacs-everywhere.el

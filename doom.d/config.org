@@ -391,6 +391,7 @@ grammar                      ; tasing grammar mistake every you make
 #+name: doom-tools
 #+begin_src emacs-lisp
 ansible                      ; a crucible for infrastructure as code
+biblio
 ;;debugger                   ; FIXME stepping through code, to help you add bugs
 ;;direnv                     ; be direct about your environment
 docker                       ; port everything to containers
@@ -1904,23 +1905,6 @@ file uploading script (which I've renamed to ~upload~).
 (use-package! screenshot
   :defer t
   :config (setq screenshot-upload-fn "upload %s 2>/dev/null"))
-#+end_src
-*** Etrace
-
-The /Emacs Lisp Profiler/ (ELP) does a nice job recording information, but it
-isn't the best for looking at results. =etrace= converts ELP's results to the
-"Chromium Catapult Trace Event Format". This means that the output of =etrace= can
-be loaded in something like the [[https://www.speedscope.app/][speedscope]] webapp for easier profile
-investigation.
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! etrace :recipe (:host github :repo "aspiers/etrace")
-  :pin "2291ccf2f2ccc80a6aac4664e8ede736ceb672b7")
-#+end_src
-
-#+begin_src emacs-lisp :tangle packages.el
-(use-package! etrace
-  :after elp)
 #+end_src
 
 *** YASnippet
