@@ -7,19 +7,19 @@
 #+author: Justin
 #+date: 2022-06-19
 
-Org-mode nodes represent topics parsed into the RSS reader (elfeed),
-with feeds assigned tags by their parent headings. I'm also including my
-favorite articles by a specific post with lists that aren't parsed (in no
-particular order - assuming I remember to do this).
-
-Right now I am additionally exporting this as my "blog roll" section of my main
+Right now I am exporting this as my "blog roll" section of my main
 site. I could probably stand to clean this up, but still it shows the stuff I
-deem important enough to watch in my reader. It exports when I save, so it
-should be kept pretty much to date.
+watch in my reader. It exports when I save, so it should be kept pretty much to
+date.
 
 Also, low priority, but I'd like to eventually add an export rule that transforms the
 links from their feeds to just links to the websites. For now, I trust the
 reader is smart enough to just remove the =/feed=, =/rss=, etc. from the link.
+
+I'm also including my favorite articles by a specific post with lists that
+aren't parsed (in no particular order - assuming I remember to do this).Feel
+free to borrow / use as a base for your own readers, the .org file for this can
+simply be copied to your own elfeed-org config.
 
 * Links :elfeed:
 ** Aggregators :agg:
@@ -34,6 +34,8 @@ Self-explanatory, sites that are less person-focused and more on the topic.
 ***** Software / Programming :dev:
 ****** Python :python:
 ******* entry-title: \(python\)
+******* https://snarky.ca/rss/
+Lots of neat python implementation posts.
 ****** Rust :rust:
 ******* entry-title: \(rust\)
 ******* [[https://this-week-in-rust.org/rss.xml][This Week in Rust]] :summary:
@@ -47,33 +49,30 @@ Self-explanatory, sites that are less person-focused and more on the topic.
 ******* https://www.dominicanajournal.org :ignore:
 I like the posts here, but they don't have RSS feeds that I can tell.
 **** Person Based
-Blogs centered around a specific writer/group.
-***** Ingroup :ingroup:
-This is more people that are in the same intellectual spheres and such. Or at
-least quasi-adjacent. May not be heterodox.
-****** http://www.aaronsw.com/weblog/index.xml
-****** https://danwang.co/feed/
-****** https://slatestarcodex.com/feed/
-****** https://zerohplovecraft.wordpress.com/feed/
-****** http://feeds.feedburner.com/thelastpsychiatrist/fLMy?format=xml
-****** https://feeds.feedblitz.com/marginalrevolution&x=1 :economics:
-****** https://fantasticanachronism.com/atom.xml
-****** https://nintil.com/rss.xml
-****** https://danluu.com/atom.xml
-****** https://www.ribbonfarm.com/feed/
-****** https://hotelconcierge.tumblr.com/rss
-****** Substack :substack:
-******* https://astralcodexten.substack.com/feed
-******** **Recommended Reading** :ignore:
-********* [[https://astralcodexten.substack.com/p/heuristics-that-almost-always-work][Heuristics that Almost Always Work]]
-******* https://freddiedeboer.substack.com/feed
-******* https://sashachapin.substack.com/feed
-******* https://www.strangeloopcanon.com/feed
-******* https://erikhoel.substack.com/feed
-******* https://www.blockedandreported.org/feed
+Blogs centered around a specific writer/group. Mostly things I've wandered into,
+and liked at least one article/story, may not align with all views, blah, blah, etc.
+***** http://www.aaronsw.com/weblog/index.xml
+***** https://danwang.co/feed/
+***** https://slatestarcodex.com/feed/
+***** https://zerohplovecraft.wordpress.com/feed/
+***** http://feeds.feedburner.com/thelastpsychiatrist/fLMy?format=xml
+***** https://feeds.feedblitz.com/marginalrevolution&x=1 :economics:
+***** https://fantasticanachronism.com/atom.xml
+***** https://nintil.com/rss.xml
+***** https://danluu.com/atom.xml
+***** https://www.ribbonfarm.com/feed/
+***** https://hotelconcierge.tumblr.com/rss
+***** Substack :substack:
+****** https://astralcodexten.substack.com/feed
+******* **Recommended Reading** :ignore:
+******** [[https://astralcodexten.substack.com/p/heuristics-that-almost-always-work][Heuristics that Almost Always Work]]
+****** https://freddiedeboer.substack.com/feed
+****** https://sashachapin.substack.com/feed
+****** https://www.strangeloopcanon.com/feed
+****** https://erikhoel.substack.com/feed
+****** https://www.blockedandreported.org/feed
 This is a podcast, but it's sometimes there's supplementary info that's in the posts.
-******* https://www.piratewires.com/feed
-***** Other
+****** https://www.piratewires.com/feed
 ****** http://boston.conman.org/bostondiaries.rss
 A blog I found while reading about the gemini protocol. Seems a bit catankerous
 but I dig the vibe.
@@ -81,10 +80,11 @@ but I dig the vibe.
 Reorx, person who wrote PaperModX.
 ** News :news:
 The news is probably a  [[http://www.aaronsw.com/weblog/hatethenews][waste of time]]. Limiting it down to specific publications
-relevant to my interest/career.
+relevant to my interest/career. Keeping this section open just-in-case.
 **** Politics :politics:
 ***** [[https://fivethirtyeight.com/features/feed/][FiveThirtyEight]] :journalism:
 ** Webcomics :comics:
+I like comics. Need to read mores.
 ****  https://www.smbc-comics.com/comic/rss
 ** Video :video:
 *** YouTube :youtube:
@@ -100,6 +100,7 @@ I've seen workflows that allow for mpd/mpc and emms to listen to podcasts inside
 emacs but it seemed fiddly. I plan to list podcasts that have
 ancillary content here, otherwise I'll use a dedicated podcasting app.
 **** https://talkpython.fm/episodes/rss :python:
+
 * Footnotes
 * COMMENT Local Variables                          :ARCHIVE:
 # Local Variables:
