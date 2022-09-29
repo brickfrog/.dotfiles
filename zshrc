@@ -40,6 +40,7 @@ export PATH=~/.cargo/bin:$PATH
 
 alias vim="nvim"
 alias v="nvim"
+alias hx="helix"
 alias ls='lsd'
 alias l='ls -l'
 alias la='ls -a'

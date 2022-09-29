@@ -4,5 +4,5 @@
     None, Down, Button5, 4
 
 "^firefox$"
-    None, Up, Button4, 4
-    None, Down, Button5, 4
+    None, Up, Button4, 5
+    None, Down, Button5, 5
